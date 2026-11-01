@@ -1,0 +1,1432 @@
+/* =========================================================
+   RESET
+========================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+
+    background:
+        radial-gradient(
+            circle at 75% 50%,
+            rgba(0, 105, 255, 0.12),
+            transparent 35%
+        ),
+        radial-gradient(
+            circle at 20% 80%,
+            rgba(0, 180, 255, 0.08),
+            transparent 30%
+        ),
+        #020b19;
+
+    color: #d8f6ff;
+
+    font-family:
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    overflow: hidden;
+}
+
+
+
+/* =========================================================
+   CYBER GRID BACKGROUND
+========================================================= */
+
+.bg-grid {
+
+    position: fixed;
+
+    inset: 0;
+
+    pointer-events: none;
+
+    opacity: 0.23;
+
+    background-image:
+
+        linear-gradient(
+            rgba(0, 140, 255, 0.12) 1px,
+            transparent 1px
+        ),
+
+        linear-gradient(
+            90deg,
+            rgba(0, 140, 255, 0.12) 1px,
+            transparent 1px
+        );
+
+    background-size: 55px 55px;
+
+    mask-image:
+        linear-gradient(
+            to bottom,
+            transparent,
+            black 20%,
+            black 80%,
+            transparent
+        );
+}
+
+
+
+/* =========================================================
+   BACKGROUND GLOW
+========================================================= */
+
+.bg-glow {
+
+    position: fixed;
+
+    width: 500px;
+    height: 500px;
+
+    border-radius: 50%;
+
+    filter: blur(100px);
+
+    pointer-events: none;
+
+    opacity: 0.15;
+}
+
+.glow-one {
+
+    background: #0077ff;
+
+    right: -180px;
+    top: 150px;
+}
+
+.glow-two {
+
+    background: #00e5ff;
+
+    left: 120px;
+    bottom: -300px;
+}
+
+
+
+/* =========================================================
+   TOP BAR
+========================================================= */
+
+.topbar {
+
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 72px;
+
+    z-index: 100;
+
+    display: flex;
+
+    align-items: center;
+
+    background:
+        linear-gradient(
+            90deg,
+            #031329,
+            #041a32 55%,
+            #020d20
+        );
+
+    border-bottom: 1px solid #075d9e;
+
+    box-shadow:
+        0 0 20px rgba(0, 130, 255, 0.18);
+}
+
+
+
+/* =========================================================
+   BRAND
+========================================================= */
+
+.brand {
+
+    width: 300px;
+
+    display: flex;
+
+    align-items: center;
+
+    padding-left: 22px;
+
+    gap: 12px;
+}
+
+.brand-icon {
+
+    width: 42px;
+    height: 42px;
+
+    border: 2px solid #00bfff;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    color: #00d9ff;
+
+    font-size: 27px;
+
+    box-shadow:
+        0 0 15px rgba(0, 191, 255, 0.5);
+
+    transform: rotate(30deg);
+}
+
+.brand-icon span {
+    transform: rotate(-30deg);
+}
+
+.brand-text h1 {
+
+    color: #12cfff;
+
+    font-size: 25px;
+
+    letter-spacing: 2px;
+}
+
+.brand-text p {
+
+    color: #8ca8c3;
+
+    font-size: 10px;
+
+    letter-spacing: 1px;
+
+    margin-top: -2px;
+}
+
+
+
+/* =========================================================
+   TOP NAV
+========================================================= */
+
+.top-navigation {
+
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 34px;
+
+    flex: 1;
+
+    justify-content: center;
+}
+
+.top-navigation a {
+
+    position: relative;
+
+    color: #168bc8;
+
+    text-decoration: none;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    letter-spacing: 0.8px;
+
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    transition: 0.25s;
+}
+
+.top-navigation a:hover {
+
+    color: #00d9ff;
+}
+
+.top-navigation a.active {
+
+    color: #00d9ff;
+
+    text-shadow:
+        0 0 12px rgba(0, 217, 255, 0.8);
+}
+
+.top-navigation a.active::after {
+
+    content: "";
+
+    position: absolute;
+
+    bottom: 0;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: 75px;
+
+    height: 4px;
+
+    background: #00d9ff;
+
+    box-shadow:
+        0 0 14px #00d9ff;
+}
+
+
+
+/* =========================================================
+   TOP RIGHT
+========================================================= */
+
+.top-right {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 20px;
+
+    padding-right: 22px;
+}
+
+.system-status {
+
+    color: #00d98b;
+
+    font-size: 12px;
+
+    letter-spacing: 1px;
+
+    white-space: nowrap;
+}
+
+.status-dot {
+
+    display: inline-block;
+
+    width: 9px;
+    height: 9px;
+
+    border-radius: 50%;
+
+    background: #00ef9a;
+
+    margin-right: 6px;
+
+    box-shadow:
+        0 0 10px #00ef9a;
+}
+
+.clock {
+
+    color: #13d4ff;
+
+    font-family: monospace;
+
+    font-size: 20px;
+
+    letter-spacing: 1px;
+}
+
+.logout-btn {
+
+    padding: 9px 17px;
+
+    border: 1px solid #ef1760;
+
+    border-radius: 6px;
+
+    color: #ff3b79;
+
+    text-decoration: none;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: 1px;
+
+    box-shadow:
+        inset 0 0 10px rgba(255, 0, 100, 0.06),
+        0 0 10px rgba(255, 0, 100, 0.1);
+
+    transition: 0.2s;
+}
+
+.logout-btn:hover {
+
+    background: rgba(255, 0, 100, 0.12);
+
+    box-shadow:
+        0 0 15px rgba(255, 0, 100, 0.4);
+}
+
+
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+.sidebar {
+
+    position: fixed;
+
+    top: 72px;
+    left: 0;
+    bottom: 0;
+
+    width: 245px;
+
+    z-index: 50;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            180deg,
+            #03152c 0%,
+            #020d1d 70%,
+            #010914 100%
+        );
+
+    border-right: 1px solid #075d9e;
+
+    box-shadow:
+        10px 0 35px rgba(0, 100, 255, 0.08);
+}
+
+
+
+/* =========================================================
+   SIDEBAR ITEMS
+========================================================= */
+
+.sidebar-menu {
+
+    position: relative;
+
+    z-index: 5;
+
+    padding-top: 15px;
+}
+
+.side-item {
+
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 16px;
+
+    height: 55px;
+
+    padding-left: 26px;
+
+    color: #11a6e6;
+
+    text-decoration: none;
+
+    font-size: 14px;
+
+    font-weight: 500;
+
+    letter-spacing: 0.2px;
+
+    border-left: 3px solid transparent;
+
+    transition: 0.2s;
+}
+
+.side-item:hover {
+
+    color: #5eeaff;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(0, 160, 255, 0.13),
+            transparent
+        );
+}
+
+.side-item.active {
+
+    color: #00e5ff;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(0, 180, 255, 0.25),
+            rgba(0, 180, 255, 0.05)
+        );
+
+    border-left-color: #00e5ff;
+
+    box-shadow:
+        inset 0 0 20px rgba(0, 180, 255, 0.08);
+}
+
+.side-item.active::after {
+
+    content: "";
+
+    position: absolute;
+
+    right: 0;
+
+    top: 0;
+
+    border-top: 27px solid transparent;
+    border-bottom: 27px solid transparent;
+
+    border-right: 0;
+    border-left: 15px solid #00aaff;
+
+    filter:
+        drop-shadow(0 0 5px #00aaff);
+}
+
+.side-icon {
+
+    width: 22px;
+
+    text-align: center;
+
+    font-size: 20px;
+
+    color: #00baff;
+}
+
+.logout-side {
+
+    margin-top: 5px;
+}
+
+
+
+/* =========================================================
+   SIDEBAR IMAGE
+========================================================= */
+
+.sidebar-visual {
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+
+    bottom: 0;
+
+    height: 275px;
+
+    z-index: 1;
+
+    pointer-events: none;
+
+    overflow: hidden;
+
+    display: flex;
+
+    align-items: flex-end;
+
+    justify-content: center;
+}
+
+.sidebar-visual::before {
+
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+
+    top: 0;
+
+    height: 100%;
+
+    background:
+        linear-gradient(
+            to bottom,
+            #03152c 0%,
+            transparent 35%,
+            rgba(0, 130, 255, 0.08) 100%
+        );
+
+    z-index: 2;
+}
+
+.sidebar-visual img {
+
+    position: absolute;
+
+    bottom: -25px;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: 275px;
+
+    height: 245px;
+
+    object-fit: cover;
+
+    object-position: left bottom;
+
+    opacity: 0.78;
+
+    filter:
+        saturate(1.2)
+        brightness(0.85)
+        drop-shadow(0 0 14px rgba(0, 160, 255, 0.5));
+}
+
+
+
+/* =========================================================
+   MAIN CONTENT
+========================================================= */
+
+.main-content {
+
+    position: fixed;
+
+    left: 245px;
+
+    top: 72px;
+
+    right: 0;
+
+    bottom: 0;
+
+    padding: 28px 32px;
+
+    overflow: hidden;
+}
+
+
+
+/* =========================================================
+   PAGE HEADER
+========================================================= */
+
+.page-header {
+
+    height: 74px;
+
+    display: flex;
+
+    align-items: center;
+
+    position: relative;
+}
+
+.title-icon {
+
+    width: 58px;
+    height: 42px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    color: #00e5ff;
+
+    font-size: 38px;
+
+    text-shadow:
+        0 0 12px #00d9ff;
+
+    margin-right: 15px;
+}
+
+.page-header h2 {
+
+    color: #edfaff;
+
+    font-size: 25px;
+
+    letter-spacing: 1.5px;
+
+    font-weight: 600;
+}
+
+.page-header p {
+
+    margin-top: 4px;
+
+    color: #00cfff;
+
+    font-size: 13px;
+
+    letter-spacing: 0.5px;
+}
+
+.packet-count-label {
+
+    margin-left: auto;
+
+    align-self: flex-start;
+
+    margin-top: 10px;
+
+    color: #00b8ff;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: 1px;
+}
+
+
+
+/* =========================================================
+   PACKET PANEL
+========================================================= */
+
+.packet-panel {
+
+    position: relative;
+
+    width: 100%;
+
+    height: calc(100vh - 205px);
+
+    min-height: 400px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(2, 25, 50, 0.86),
+            rgba(1, 16, 32, 0.91)
+        );
+
+    border: 1px solid #0872b7;
+
+    box-shadow:
+        0 0 25px rgba(0, 130, 255, 0.12),
+        inset 0 0 40px rgba(0, 100, 255, 0.035);
+
+    clip-path: polygon(
+        18px 0,
+        calc(100% - 18px) 0,
+        100% 18px,
+        100% calc(100% - 18px),
+        calc(100% - 18px) 100%,
+        18px 100%,
+        0 calc(100% - 18px),
+        0 18px
+    );
+
+    padding: 16px 25px 25px;
+}
+
+
+
+/* =========================================================
+   PANEL CORNERS
+========================================================= */
+
+.panel-corner {
+
+    position: absolute;
+
+    width: 22px;
+    height: 22px;
+
+    border-color: #00aaff;
+
+    border-style: solid;
+
+    filter:
+        drop-shadow(0 0 5px #008cff);
+}
+
+.corner-tl {
+
+    left: 0;
+    top: 0;
+
+    border-width: 2px 0 0 2px;
+}
+
+.corner-tr {
+
+    right: 0;
+    top: 0;
+
+    border-width: 2px 2px 0 0;
+}
+
+.corner-bl {
+
+    left: 0;
+    bottom: 0;
+
+    border-width: 0 0 2px 2px;
+}
+
+.corner-br {
+
+    right: 0;
+    bottom: 0;
+
+    border-width: 0 2px 2px 0;
+}
+
+
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.table-wrapper {
+
+    width: 100%;
+
+    height: 100%;
+
+    overflow: hidden;
+
+    border: 1px solid rgba(0, 130, 220, 0.55);
+
+    background:
+        rgba(0, 12, 28, 0.58);
+}
+
+.packet-table {
+
+    width: 100%;
+
+    border-collapse: collapse;
+
+    table-layout: fixed;
+}
+
+.packet-table thead {
+
+    height: 42px;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(0, 135, 220, 0.14),
+            rgba(0, 60, 120, 0.08)
+        );
+}
+
+.packet-table th {
+
+    text-align: left;
+
+    color: #d7f4ff;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: 1.4px;
+
+    padding: 13px 20px;
+
+    border-bottom: 1px solid #0c5f91;
+}
+
+.packet-table td {
+
+    height: 48px;
+
+    padding: 7px 20px;
+
+    color: #b9d8e8;
+
+    font-family: monospace;
+
+    font-size: 13px;
+
+    border-bottom: 1px solid rgba(0, 110, 180, 0.22);
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+.packet-table tbody tr {
+
+    transition: 0.15s;
+
+    animation: rowIn 0.3s ease;
+}
+
+.packet-table tbody tr:hover {
+
+    background:
+        rgba(0, 150, 255, 0.08);
+}
+
+
+
+/* =========================================================
+   PROTOCOL BADGES
+========================================================= */
+
+.protocol-badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-width: 56px;
+
+    padding: 5px 11px;
+
+    border-radius: 7px;
+
+    border: 1px solid #087ee8;
+
+    color: #20b8ff;
+
+    background:
+        rgba(0, 100, 255, 0.12);
+
+    font-family:
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.8px;
+
+    box-shadow:
+        0 0 8px rgba(0, 120, 255, 0.13);
+}
+
+.protocol-tcp {
+
+    border-color: #00c8ff;
+
+    color: #00e5ff;
+
+    background:
+        rgba(0, 190, 255, 0.09);
+}
+
+.protocol-icmp {
+
+    border-color: #b267ff;
+
+    color: #c98aff;
+
+    background:
+        rgba(140, 70, 255, 0.09);
+}
+
+
+
+/* =========================================================
+   STATUS BADGES
+========================================================= */
+
+.status-badge {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    min-width: 108px;
+
+    justify-content: center;
+
+    padding: 6px 14px;
+
+    border-radius: 7px;
+
+    font-family:
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    letter-spacing: 0.4px;
+}
+
+
+
+/* GREEN */
+
+.status-allowed {
+
+    color: #00f0a0;
+
+    border: 1px solid #00c982;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(0, 220, 140, 0.16),
+            rgba(0, 140, 100, 0.08)
+        );
+
+    box-shadow:
+        inset 0 0 10px rgba(0, 255, 160, 0.06),
+        0 0 10px rgba(0, 220, 140, 0.08);
+}
+
+
+
+/* RED */
+
+.status-monitor {
+
+    color: #ff356d;
+
+    border: 1px solid #f01958;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255, 30, 90, 0.17),
+            rgba(130, 10, 50, 0.08)
+        );
+
+    box-shadow:
+        inset 0 0 10px rgba(255, 0, 70, 0.06),
+        0 0 10px rgba(255, 0, 70, 0.08);
+}
+
+
+
+.status-dot-small {
+
+    width: 8px;
+    height: 8px;
+
+    border-radius: 50%;
+
+    display: inline-block;
+}
+
+.status-allowed .status-dot-small {
+
+    background: #00f0a0;
+
+    box-shadow:
+        0 0 8px #00f0a0;
+}
+
+.status-monitor .status-dot-small {
+
+    background: #ff356d;
+
+    box-shadow:
+        0 0 8px #ff356d;
+}
+
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.loading-row td {
+
+    height: 180px;
+
+    text-align: center;
+}
+
+.loading-container {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 13px;
+
+    color: #5192b4;
+
+    font-family:
+        "Segoe UI",
+        Arial,
+        sans-serif;
+}
+
+.loader {
+
+    width: 18px;
+    height: 18px;
+
+    border: 2px solid rgba(0, 190, 255, 0.2);
+
+    border-top-color: #00d9ff;
+
+    border-radius: 50%;
+
+    animation:
+        spin 0.8s linear infinite;
+}
+
+
+
+/* =========================================================
+   BOTTOM INFO
+========================================================= */
+
+.bottom-info {
+
+    height: 35px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    color: #397694;
+
+    font-size: 11px;
+
+    letter-spacing: 0.6px;
+}
+
+.live-indicator {
+
+    color: #00d99a;
+
+    font-weight: 700;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+}
+
+.pulse {
+
+    width: 7px;
+    height: 7px;
+
+    background: #00e69b;
+
+    border-radius: 50%;
+
+    box-shadow:
+        0 0 9px #00e69b;
+
+    animation:
+        pulse 1.3s infinite;
+}
+
+
+
+/* =========================================================
+   ANIMATIONS
+========================================================= */
+
+@keyframes spin {
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes pulse {
+
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.35;
+        transform: scale(0.75);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes rowIn {
+
+    from {
+        opacity: 0;
+        transform: translateY(-3px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1100px) {
+
+    .top-navigation {
+        gap: 15px;
+    }
+
+    .top-navigation a {
+        font-size: 11px;
+    }
+
+    .system-status {
+        display: none;
+    }
+
+    .sidebar {
+        width: 210px;
+    }
+
+    .main-content {
+        left: 210px;
+    }
+
+    .brand {
+        width: 240px;
+    }
+}
+
+
+@media (max-width: 800px) {
+
+    .top-navigation {
+        display: none;
+    }
+
+    .sidebar {
+        width: 190px;
+    }
+
+    .main-content {
+        left: 190px;
+
+        padding: 20px;
+    }
+
+    .packet-table th,
+    .packet-table td {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+}
+/* ===== STATISTICS BOX ORDER ===== */
+
+.statistics-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 14px !important;
+}
+
+/* Packet Size - top left */
+.statistics-grid .analysis-panel:nth-child(1) {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+/* Protocol - top right */
+.statistics-grid .analysis-panel:nth-child(2) {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+/* Threat Statistics - bottom left */
+.statistics-grid .analysis-panel:nth-child(3) {
+    grid-column: 1;
+    grid-row: 2;
+    min-height: 260px;
+}
+
+/* Response Time - bottom right */
+.statistics-grid .analysis-panel:nth-child(4) {
+    grid-column: 2;
+    grid-row: 2;
+    min-height: 260px;
+}
+
+/* Threat Distribution - full width at bottom */
+.statistics-grid .analysis-panel:nth-child(5) {
+    grid-column: 1 / 3;
+    grid-row: 3;
+    min-height: 240px;
+}
+/* =====================================================
+   FINAL ANALYSIS PAGE ORDER
+   LIVE PACKET ANALYSIS AT THE VERY END
+   ===================================================== */
+
+/* Main page ko vertical layout do */
+.analysis-main {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* Header */
+.analysis-main > .analysis-header {
+    order: 1;
+}
+
+/* Top 4 summary cards */
+.analysis-main > .summary-grid {
+    order: 2;
+}
+
+/* ALL STATISTICS BOXES */
+.analysis-main > .statistics-grid {
+    order: 3;
+}
+
+/* LIVE PACKET ANALYSIS - LAST */
+.analysis-main > .analysis-panel {
+    order: 4;
+}
+
+
+/* =====================================================
+   STATISTICS BOX ARRANGEMENT
+   ===================================================== */
+
+.statistics-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 14px !important;
+}
+
+
+/* Packet Size - TOP LEFT */
+.statistics-grid .analysis-panel:nth-child(1) {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    min-height: 220px;
+}
+
+
+/* Protocol - TOP RIGHT */
+.statistics-grid .analysis-panel:nth-child(2) {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    min-height: 220px;
+}
+
+
+/* Threat Statistics - SECOND ROW LEFT */
+.statistics-grid .analysis-panel:nth-child(3) {
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+    min-height: 260px;
+}
+
+
+/* Response Time - SECOND ROW RIGHT */
+.statistics-grid .analysis-panel:nth-child(4) {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+    min-height: 260px;
+}
+
+
+/* Threat Distribution - THIRD ROW FULL WIDTH */
+.statistics-grid .analysis-panel:nth-child(5) {
+    grid-column: 1 / 3 !important;
+    grid-row: 3 !important;
+    min-height: 230px;
+}
+
+
+/* =====================================================
+   LIVE PACKET PANEL
+   ===================================================== */
+
+.analysis-main > .analysis-panel {
+    width: 100% !important;
+    margin-top: 20px !important;
+}
+
+
+/* Live table ko proper height do */
+.analysis-main > .analysis-panel .table-scroll {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+
+/* Table ke andar scrolling */
+.analysis-main > .analysis-panel .live-table {
+    min-width: 900px;
+}
+
+
+/* =====================================================
+   MOBILE
+   ===================================================== */
+
+@media (max-width: 800px) {
+
+    .statistics-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .statistics-grid .analysis-panel:nth-child(1),
+    .statistics-grid .analysis-panel:nth-child(2),
+    .statistics-grid .analysis-panel:nth-child(3),
+    .statistics-grid .analysis-panel:nth-child(4),
+    .statistics-grid .analysis-panel:nth-child(5) {
+        grid-column: 1 !important;
+        grid-row: auto !important;
+    }
+
+}   
