@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NFA | Secure Access</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/login.css') }}">
+</head>
+
+<body>
+
+    <!-- Background -->
+    <div class="background-grid"></div>
+    <div class="background-glow glow-blue"></div>
+    <div class="background-glow glow-purple"></div>
+
+    <!-- Animated scanning line -->
+    <div class="scan-line"></div>
+
+
+    <!-- ==============================
+         NETWORK BACKGROUND
+    =============================== -->
+
+    <div class="network-background">
+
+        <span class="network-node node-1"></span>
+        <span class="network-node node-2"></span>
+        <span class="network-node node-3"></span>
+        <span class="network-node node-4"></span>
+        <span class="network-node node-5"></span>
+        <span class="network-node node-6"></span>
+
+        <span class="network-line line-1"></span>
+        <span class="network-line line-2"></span>
+        <span class="network-line line-3"></span>
+        <span class="network-line line-4"></span>
+
+    </div>
+
+
+    <!-- ==============================
+         LOGIN CONTAINER
+    =============================== -->
+
+    <main class="login-container">
+
+
+        <!-- ==============================
+             BRAND
+        =============================== -->
+
+        <header class="brand">
+
+            <div class="brand-logo">
+
+                <div class="logo-outer"></div>
+                <div class="logo-inner"></div>
+
+                <span>N</span>
+
+            </div>
+
+
+            <div class="brand-name">
+
+                <h1>NFA</h1>
+
+                <p>
+                    NETWORK FORENSICS
+                    ANALYSIS SYSTEM
+                </p>
+
+            </div>
+
+        </header>
+
+
+
+        <!-- ==============================
+             LOGIN PANEL
+        =============================== -->
+
+        <section class="login-panel">
+
+
+            <!-- HUD corners -->
+
+            <span class="hud-corner top-left"></span>
+            <span class="hud-corner top-right"></span>
+            <span class="hud-corner bottom-left"></span>
+            <span class="hud-corner bottom-right"></span>
+
+
+            <!-- Panel top -->
+
+            <div class="panel-top">
+
+                <div class="connection-status">
+
+                    <span class="status-dot"></span>
+
+                    <span>
+                        SECURE CONNECTION
+                    </span>
+
+                </div>
+
+
+                <span class="system-code">
+                    NFA://AUTH
+                </span>
+
+            </div>
+
+
+
+            <!-- ==============================
+                 LOGIN HEADER
+            =============================== -->
+
+            <div class="login-header">
+
+                <div class="shield">
+
+                    <div class="shield-shape">
+                        ◆
+                    </div>
+
+                </div>
+
+
+                <h2>
+                    SYSTEM ACCESS
+                </h2>
+
+                <p>
+                    Authorized personnel only
+                </p>
+
+            </div>
+
+
+
+            <!-- ==============================
+                 LOGIN FORM
+            =============================== -->
+
+            <form id="loginForm">
+
+
+                <!-- Username -->
+
+                <div class="input-group">
+
+                    <label for="username">
+                        OPERATOR ID
+                    </label>
+
+                    <div class="input-box">
+
+                        <span class="input-icon">
+                            ◉
+                        </span>
+
+                        <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            placeholder="Enter operator ID"
+                            autocomplete="username"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Password -->
+
+                <div class="input-group">
+
+                    <label for="password">
+                        SECURITY KEY
+                    </label>
+
+                    <div class="input-box">
+
+                        <span class="input-icon">
+                            ◆
+                        </span>
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Enter security key"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            id="togglePassword"
+                            class="password-toggle">
+                            SHOW
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Options -->
+
+                <div class="form-options">
+
+                    <label class="remember-option">
+
+                        <input
+                            type="checkbox"
+                            id="remember"
+                            name="remember"
+                        >
+
+                        <span class="custom-checkbox"></span>
+
+                        <span>
+                            Remember device
+                        </span>
+
+                    </label>
+
+
+                    <span class="encrypted">
+                        SESSION ENCRYPTED
+                    </span>
+
+                </div>
+
+
+
+                <!-- Login Button -->
+
+                <button
+                        type="submit"
+                        id="loginButton"
+                        class="authenticate-button">
+                    <span class="button-left">
+                        ◈
+                    </span>
+
+                    <span>
+                        AUTHENTICATE
+                    </span>
+
+                    <span class="button-right">
+                        →
+                    </span>
+
+                </button>
+
+
+            </form>
+
+<div id="loginStatus" class="login-status"></div>
+
+<!-- CREATE ACCOUNT -->
+<div class="create-account-section">
+    <span>NEW OPERATOR?</span>
+
+    <a href="{{ url_for('create_account') }}" class="create-account-link">
+        CREATE ACCOUNT
+        <span>→</span>
+    </a>
+</div>
+
+
+            <!-- ==============================
+                 SECURITY INFORMATION
+            =============================== -->
+
+            <div class="security-information">
+
+                <div class="security-item">
+
+                    <span>✓</span>
+
+                    <p>
+                        AES-256 ENCRYPTED
+                    </p>
+
+                </div>
+
+
+                <div class="security-item">
+
+                    <span>✓</span>
+
+                    <p>
+                        SECURE SESSION
+                    </p>
+
+                </div>
+
+
+                <div class="security-item">
+
+                    <span>✓</span>
+
+                    <p>
+                        MONITORING ACTIVE
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ==============================
+                 PANEL BOTTOM
+            =============================== -->
+
+            <div class="panel-bottom">
+
+                <span>
+                    SYSTEM STATUS
+                </span>
+
+                <strong>
+                    ONLINE
+                </strong>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ==============================
+             FOOTER
+        =============================== -->
+
+        <footer class="login-footer">
+
+            <span>
+                NETWORK MONITORING
+            </span>
+
+            <b>//</b>
+
+            <span>
+                DIGITAL FORENSICS
+            </span>
+
+            <b>//</b>
+
+            <span>
+                THREAT ANALYSIS
+            </span>
+
+        </footer>
+
+
+    </main>
+
+
+    <script
+        src="{{ url_for('static', filename='js/login.js') }}">
+    </script>
+
+</body>
+
+</html>

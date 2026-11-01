@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NFA | Threat Alerts</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/alerts.css') }}">
+</head>
+
+<body>
+
+<!-- =========================================================
+     TOP BAR
+========================================================= -->
+
+<header class="topbar">
+
+    <div class="brand">
+
+        <div class="brand-icon">
+            ◇
+        </div>
+
+        <div class="brand-text">
+            <strong>NFA</strong>
+            <span>NETWORK FORENSICS ANALYSIS SYSTEM</span>
+        </div>
+
+    </div>
+
+
+    <div class="system-status">
+        <span class="status-dot"></span>
+        SYSTEM ONLINE
+    </div>
+
+
+    <div class="top-actions">
+
+        <a href="{{ url_for('dashboard') }}" class="top-btn">
+            DASHBOARD
+        </a>
+
+        <a href="{{ url_for('logout') }}" class="logout-btn">
+            LOGOUT
+        </a>
+
+    </div>
+
+</header>
+
+
+<!-- =========================================================
+     SIDEBAR
+========================================================= -->
+
+<aside class="sidebar">
+
+    <div class="sidebar-title">
+        NFA://NAVIGATION
+    </div>
+
+
+    <nav class="sidebar-nav">
+
+        <a href="{{ url_for('dashboard') }}" class="nav-item">
+            <span class="nav-icon">◆</span>
+            <span>DASHBOARD</span>
+        </a>
+
+
+        <a href="{{ url_for('live_capture') }}" class="nav-item">
+            <span class="nav-icon">◎</span>
+            <span>LIVE CAPTURE</span>
+        </a>
+
+
+        <a href="{{ url_for('analysis') }}" class="nav-item">
+            <span class="nav-icon">⊙</span>
+            <span>ANALYSIS</span>
+        </a>
+
+
+        <a href="{{ url_for('alerts') }}" class="nav-item active">
+            <span class="nav-icon">△</span>
+            <span>ALERTS</span>
+
+            <span class="alert-count" id="sidebarAlertCount">
+                0
+            </span>
+        </a>
+
+
+        <a href="{{ url_for('reports') }}" class="nav-item">
+            <span class="nav-icon">▣</span>
+            <span>REPORTS</span>
+        </a>
+
+
+        <a href="#" class="nav-item">
+            <span class="nav-icon">⚙</span>
+            <span>SETTINGS</span>
+        </a>
+
+    </nav>
+
+
+    <!-- SIDEBAR VISUAL -->
+
+    <div class="sidebar-visual">
+
+        <img
+            src="{{ url_for('static', filename='images/analysis-map.png') }}"
+            alt="NFA Network Monitoring"
+        >
+
+        <div class="sidebar-visual-label">
+            <strong>NFA</strong> THREAT MONITORING
+        </div>
+
+    </div>
+
+</aside>
+
+
+
+<!-- =========================================================
+     MAIN CONTENT
+========================================================= -->
+
+<main class="main-content">
+
+
+    <!-- PAGE HEADER -->
+
+    <section class="page-header">
+
+        <div>
+
+            <div class="section-kicker">
+                NFA://ALERTS
+            </div>
+
+            <h1>
+                THREAT ALERTS
+            </h1>
+
+            <p>
+                Monitor suspicious network activity and investigate
+                detected security threats.
+            </p>
+
+        </div>
+
+
+        <div class="engine-status">
+
+            <span class="engine-label">
+                ALERT ENGINE
+            </span>
+
+            <div class="engine-status-line">
+                <span class="engine-dot"></span>
+                ACTIVE
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         ALERT METRICS
+    ====================================================== -->
+
+    <section class="metric-grid">
+
+
+        <div class="metric-card">
+
+            <span class="metric-label">
+                TOTAL ALERTS
+            </span>
+
+            <strong id="totalAlerts">
+                0
+            </strong>
+
+            <small>
+                DETECTED EVENTS
+            </small>
+
+        </div>
+
+
+
+        <div class="metric-card high-card">
+
+            <span class="metric-label">
+                HIGH SEVERITY
+            </span>
+
+            <strong id="highCount">
+                0
+            </strong>
+
+            <small>
+                IMMEDIATE ATTENTION
+            </small>
+
+        </div>
+
+
+
+        <div class="metric-card medium-card">
+
+            <span class="metric-label">
+                MEDIUM SEVERITY
+            </span>
+
+            <strong id="mediumCount">
+                0
+            </strong>
+
+            <small>
+                MONITOR ACTIVITY
+            </small>
+
+        </div>
+
+
+
+        <div class="metric-card low-card">
+
+            <span class="metric-label">
+                LOW SEVERITY
+            </span>
+
+            <strong id="lowCount">
+                0
+            </strong>
+
+            <small>
+                INFORMATIONAL
+            </small>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         DETECTION + RESPONSE
+    ====================================================== -->
+
+    <section class="operations-grid">
+
+
+        <!-- THREAT DETECTION -->
+
+        <div class="operation-panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <span class="panel-code">
+                        NFA://DETECTION-ENGINE
+                    </span>
+
+                    <h2>
+                        THREAT DETECTION
+                    </h2>
+
+                    <p>
+                        Rule-based analysis used to identify suspicious
+                        network behaviour.
+                    </p>
+
+                </div>
+
+                <span class="panel-badge active-badge">
+                    ACTIVE
+                </span>
+
+            </div>
+
+
+            <div class="detection-list">
+
+
+                <div class="detection-row">
+
+                    <div class="detection-icon">
+                        TCP
+                    </div>
+
+                    <div class="detection-info">
+
+                        <strong>
+                            SYN Connection Monitoring
+                        </strong>
+
+                        <span>
+                            Detects TCP SYN connection attempts
+                        </span>
+
+                    </div>
+
+                    <span class="rule-status">
+                        ENABLED
+                    </span>
+
+                </div>
+
+
+
+                <div class="detection-row">
+
+                    <div class="detection-icon">
+                        SCAN
+                    </div>
+
+                    <div class="detection-info">
+
+                        <strong>
+                            Port Scan Detection
+                        </strong>
+
+                        <span>
+                            Correlates multiple destination ports
+                        </span>
+
+                    </div>
+
+                    <span class="rule-status">
+                        ENABLED
+                    </span>
+
+                </div>
+
+
+
+                <div class="detection-row">
+
+                    <div class="detection-icon">
+                        UDP
+                    </div>
+
+                    <div class="detection-info">
+
+                        <strong>
+                            Abnormal UDP Traffic
+                        </strong>
+
+                        <span>
+                            Identifies unusually large UDP packets
+                        </span>
+
+                    </div>
+
+                    <span class="rule-status">
+                        ENABLED
+                    </span>
+
+                </div>
+
+
+
+                <div class="detection-row">
+
+                    <div class="detection-icon">
+                        ICMP
+                    </div>
+
+                    <div class="detection-info">
+
+                        <strong>
+                            ICMP Anomaly Monitoring
+                        </strong>
+
+                        <span>
+                            Checks abnormal ICMP packet sizes
+                        </span>
+
+                    </div>
+
+                    <span class="rule-status">
+                        ENABLED
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- RESPONSE STATUS -->
+
+        <div class="operation-panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <span class="panel-code">
+                        NFA://SECURITY-RESPONSE
+                    </span>
+
+                    <h2>
+                        RESPONSE STATUS
+                    </h2>
+
+                    <p>
+                        Current action taken after a suspicious event
+                        is detected.
+                    </p>
+
+                </div>
+
+                <span class="panel-badge monitor-badge">
+                    MONITOR
+                </span>
+
+            </div>
+
+
+            <div class="response-content">
+
+
+                <div class="response-main">
+
+                    <div class="response-icon">
+                        !
+                    </div>
+
+                    <div>
+
+                        <span class="response-label">
+                            CURRENT MODE
+                        </span>
+
+                        <strong>
+                            DETECT &amp; INVESTIGATE
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="response-steps">
+
+                    <div class="response-step done">
+
+                        <span class="step-number">
+                            01
+                        </span>
+
+                        <div>
+                            <strong>PACKET CAPTURE</strong>
+                            <small>
+                                Network packet received
+                            </small>
+                        </div>
+
+                    </div>
+
+
+                    <div class="response-line"></div>
+
+
+                    <div class="response-step done">
+
+                        <span class="step-number">
+                            02
+                        </span>
+
+                        <div>
+                            <strong>THREAT ANALYSIS</strong>
+                            <small>
+                                Detection rules evaluated
+                            </small>
+                        </div>
+
+                    </div>
+
+
+                    <div class="response-line"></div>
+
+
+                    <div class="response-step active">
+
+                        <span class="step-number">
+                            03
+                        </span>
+
+                        <div>
+                            <strong>ALERT GENERATED</strong>
+                            <small>
+                                Event saved for investigation
+                            </small>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="response-note">
+
+                    <span>●</span>
+
+                    <p>
+                        NFA currently performs detection and forensic
+                        logging. Packets are not automatically blocked.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         RECENT THREATS
+    ====================================================== -->
+
+    <section class="threats-panel">
+
+
+        <div class="panel-header threats-header">
+
+            <div>
+
+                <span class="panel-code">
+                    NFA://THREATS
+                </span>
+
+                <h2>
+                    RECENT THREATS
+                </h2>
+
+                <p>
+                    Real-time suspicious activity detected by the
+                    network detection engine.
+                </p>
+
+            </div>
+
+
+            <div class="threat-actions">
+
+                <span class="live-badge">
+                    <span class="live-dot"></span>
+                    LIVE
+                </span>
+
+                <button
+                    type="button"
+                    id="refreshAlerts"
+                    class="refresh-btn"
+                >
+                    ↻ REFRESH
+                </button>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- FILTER BAR -->
+
+        <div class="filter-bar">
+
+            <div class="monitoring-text">
+                MONITORING NETWORK ACTIVITY
+            </div>
+
+
+            <div class="filter-controls">
+
+                <input
+                    type="text"
+                    id="alertSearch"
+                    placeholder="SEARCH THREATS..."
+                    autocomplete="off"
+                >
+
+
+                <select id="severityFilter">
+
+                    <option value="ALL">
+                        ALL SEVERITY
+                    </option>
+
+                    <option value="High">
+                        HIGH
+                    </option>
+
+                    <option value="Medium">
+                        MEDIUM
+                    </option>
+
+                    <option value="Low">
+                        LOW
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- TABLE -->
+
+        <div class="table-wrapper">
+
+            <table class="threat-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>TIME</th>
+
+                        <th>THREAT</th>
+
+                        <th>SOURCE IP</th>
+
+                        <th>DESTINATION IP</th>
+
+                        <th>PROTOCOL</th>
+
+                        <th>SEVERITY</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="alertsBody">
+
+                    <tr>
+
+                        <td colspan="6" class="loading-row">
+                            LOADING THREAT DATA...
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+
+        <!-- TABLE FOOTER -->
+
+        <div class="threat-footer">
+
+            <span>
+                LAST UPDATE:
+                <strong id="lastUpdated">--:--:--</strong>
+            </span>
+
+            <span>
+                AUTO REFRESH:
+                <strong class="auto-refresh-status">
+                    3 SEC
+                </strong>
+            </span>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         FORENSIC INFORMATION
+    ====================================================== -->
+
+    <section class="forensic-strip">
+
+        <div class="forensic-item">
+
+            <span class="forensic-icon">
+                01
+            </span>
+
+            <div>
+
+                <strong>
+                    SOURCE IDENTIFICATION
+                </strong>
+
+                <span>
+                    Source IP is recorded with every detected event.
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="forensic-item">
+
+            <span class="forensic-icon">
+                02
+            </span>
+
+            <div>
+
+                <strong>
+                    EVENT CORRELATION
+                </strong>
+
+                <span>
+                    Multiple connection attempts can indicate port scanning.
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="forensic-item">
+
+            <span class="forensic-icon">
+                03
+            </span>
+
+            <div>
+
+                <strong>
+                    FORENSIC LOGGING
+                </strong>
+
+                <span>
+                    Time, protocol, destination and severity are retained.
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- FOOTER -->
+
+    <footer class="page-footer">
+
+        NFA NETWORK FORENSICS ANALYSIS SYSTEM
+        <span>•</span>
+        THREAT MONITORING MODULE
+        <span>•</span>
+        SYSTEM ONLINE
+
+    </footer>
+
+
+</main>
+
+
+
+<script src="{{ url_for('static', filename='js/alerts.js') }}"></script>
+
+</body>
+</html>

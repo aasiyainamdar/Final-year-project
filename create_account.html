@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Create Account | NFA</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(0, 217, 255, 0.08), transparent 30%),
+                radial-gradient(circle at 80% 80%, rgba(120, 80, 255, 0.08), transparent 30%),
+                #050b12;
+            color: #d9f7ff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .grid {
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(0, 217, 255, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 217, 255, 0.04) 1px, transparent 1px);
+            background-size: 45px 45px;
+        }
+
+        .account-container {
+            width: 430px;
+            padding: 35px;
+            background: rgba(7, 18, 29, 0.95);
+            border: 1px solid rgba(0, 217, 255, 0.35);
+            box-shadow:
+                0 0 30px rgba(0, 217, 255, 0.12),
+                0 0 70px rgba(90, 60, 255, 0.08);
+            position: relative;
+            z-index: 2;
+        }
+
+        .brand {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .brand-title {
+            font-size: 36px;
+            font-weight: bold;
+            letter-spacing: 7px;
+            color: #00d9ff;
+            text-shadow: 0 0 15px rgba(0, 217, 255, 0.7);
+        }
+
+        .brand-subtitle {
+            margin-top: 8px;
+            font-size: 11px;
+            letter-spacing: 3px;
+            color: #607d8b;
+        }
+
+        .line {
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                #00d9ff,
+                transparent
+            );
+            margin: 20px 0 25px;
+        }
+
+        .heading {
+            text-align: center;
+            font-size: 17px;
+            letter-spacing: 2px;
+            color: #b9eefa;
+            margin-bottom: 22px;
+        }
+
+        .input-group {
+            margin-bottom: 17px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 11px;
+            letter-spacing: 1.5px;
+            color: #648694;
+            margin-bottom: 7px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 13px 14px;
+            background: rgba(2, 10, 17, 0.9);
+            border: 1px solid rgba(100, 170, 200, 0.2);
+            color: #dffaff;
+            outline: none;
+            font-size: 17px;
+        }
+
+        .input-group input:focus {
+            border-color: #00d9ff;
+            box-shadow: 0 0 12px rgba(0, 217, 255, 0.18);
+        }
+
+        .create-btn {
+            width: 100%;
+            padding: 14px;
+            margin-top: 5px;
+            border: 1px solid #00d9ff;
+            background: rgba(0, 217, 255, 0.08);
+            color: #00d9ff;
+            font-size: 14px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: 0.25s;
+        }
+
+        .create-btn:hover {
+            background: #00d9ff;
+            color: #031019;
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.45);
+        }
+
+        .create-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #status {
+            min-height: 18px;
+            margin-top: 15px;
+            text-align: center;
+            font-size: 17px;
+            letter-spacing: 0.7px;
+        }
+
+        .success {
+            color: #39ff9c;
+        }
+
+        .error {
+            color: #ff5577;
+        }
+
+        .back-login {
+            text-align: center;
+            margin-top: 22px;
+            font-size: 9px;
+            color: #587481;
+        }
+
+        .back-login a {
+            color: #00d9ff;
+            text-decoration: none;
+            margin-left: 5px;
+        }
+
+        .back-login a:hover {
+            color: #a78bfa;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="grid"></div>
+
+<div class="account-container">
+
+    <div class="brand">
+        <div class="brand-title">NFA</div>
+        <div class="brand-subtitle">
+            NETWORK FORENSICS ANALYSIS SYSTEM
+        </div>
+    </div>
+
+    <div class="line"></div>
+
+    <div class="heading">
+        CREATE OPERATOR ACCOUNT
+    </div>
+
+    <form id="createAccountForm">
+
+        <div class="input-group">
+            <label>OPERATOR ID</label>
+            <input
+                type="text"
+                id="username"
+                placeholder="Enter username"
+                required
+            >
+        </div>
+
+        <div class="input-group">
+            <label>EMAIL ADDRESS</label>
+            <input
+                type="email"
+                id="email"
+                placeholder="Enter email"
+                required
+            >
+        </div>
+
+        <div class="input-group">
+            <label>SECURITY KEY</label>
+            <input
+                type="password"
+                id="password"
+                placeholder="Create password"
+                required
+            >
+        </div>
+
+        <div class="input-group">
+            <label>CONFIRM SECURITY KEY</label>
+            <input
+                type="password"
+                id="confirmPassword"
+                placeholder="Confirm password"
+                required
+            >
+        </div>
+
+        <button type="submit" class="create-btn" id="createButton">
+            CREATE ACCOUNT
+        </button>
+
+        <div id="status"></div>
+
+    </form>
+
+    <div class="back-login">
+        ALREADY REGISTERED?
+        <a href="{{ url_for('home') }}">BACK TO LOGIN →</a>
+    </div>
+
+</div>
+
+<script>
+
+document.getElementById("createAccountForm").addEventListener("submit", async function(event) {
+
+    event.preventDefault();
+
+    const username =
+        document.getElementById("username").value.trim();
+
+    const email =
+        document.getElementById("email").value.trim();
+
+    const password =
+        document.getElementById("password").value;
+
+    const confirmPassword =
+        document.getElementById("confirmPassword").value;
+
+    const button =
+        document.getElementById("createButton");
+
+    const status =
+        document.getElementById("status");
+
+    if (!username || !email || !password || !confirmPassword) {
+        status.textContent = "ALL FIELDS ARE REQUIRED";
+        status.className = "error";
+        return;
+    }
+
+    if (password !== confirmPassword) {
+        status.textContent = "PASSWORDS DO NOT MATCH";
+        status.className = "error";
+        return;
+    }
+
+    button.disabled = true;
+    button.textContent = "CREATING ACCOUNT...";
+    status.textContent = "REGISTERING OPERATOR...";
+    status.className = "";
+
+    try {
+
+        const response = await fetch("/api/create-account", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "same-origin",
+
+            body: JSON.stringify({
+                username: username,
+                email: email,
+                password: password,
+                confirm_password: confirmPassword
+            })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+
+            status.textContent =
+                "ACCOUNT CREATED SUCCESSFULLY";
+
+            status.className = "success";
+
+            setTimeout(() => {
+                window.location.href = "/";
+            }, 1200);
+
+        } else {
+
+            status.textContent =
+                data.message || "ACCOUNT CREATION FAILED";
+
+            status.className = "error";
+
+            button.disabled = false;
+            button.textContent = "CREATE ACCOUNT";
+        }
+
+    } catch (error) {
+
+        console.error(error);
+
+        status.textContent =
+            "SERVER CONNECTION ERROR";
+
+        status.className = "error";
+
+        button.disabled = false;
+        button.textContent = "CREATE ACCOUNT";
+    }
+
+});
+
+</script>
+
+</body>
+</html>

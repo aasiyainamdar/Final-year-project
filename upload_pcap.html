@@ -1,0 +1,233 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PCAP Analysis | Network Forensics</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            padding: 30px;
+            background: #07111f;
+            color: #e8f2ff;
+            font-family: Arial, sans-serif;
+        }
+        .container { max-width: 1200px; margin: auto; }
+        h1 { color: #42d9ff; }
+        .subtitle { color: #9eb3ca; }
+        .card {
+            background: #101e30;
+            border: 1px solid #263c55;
+            border-radius: 12px;
+            padding: 22px;
+            margin: 20px 0;
+        }
+        input, button {
+            padding: 12px;
+            border-radius: 7px;
+            margin: 8px 5px 8px 0;
+        }
+        input[type="file"] {
+            max-width: 100%;
+            background: #17283c;
+            color: white;
+        }
+        button {
+            background: #08b9d9;
+            color: #06111e;
+            border: 0;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 14px;
+        }
+        .stat {
+            background: #0a1625;
+            border: 1px solid #263c55;
+            border-radius: 9px;
+            padding: 18px;
+        }
+        .value {
+            font-size: 26px;
+            color: #42d9ff;
+            margin-top: 10px;
+            overflow-wrap: anywhere;
+        }
+        .table-wrap { overflow-x: auto; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 850px;
+        }
+        th, td {
+            padding: 11px;
+            border-bottom: 1px solid #263c55;
+            text-align: left;
+            font-size: 13px;
+        }
+        th { color: #42d9ff; }
+        .high { color: #ff7272; }
+        .medium { color: #ffc76b; }
+        .notice { color: #a8c2db; }
+        a { color: #42d9ff; }
+        .message { color: #ffc76b; margin: 10px 0; }
+        @media (max-width: 600px) {
+            body { padding: 14px; }
+            .card { padding: 14px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="{{ url_for('dashboard') }}">← Back to Dashboard</a>
+
+    <h1>PCAP Packet Analysis</h1>
+    <p class="subtitle">Upload a packet capture to inspect protocols, IP addresses and suspicious indicators.</p>
+
+    <div class="card">
+        <h2>Upload PCAP / PCAPNG</h2>
+
+        {% with messages = get_flashed_messages() %}
+            {% for message in messages %}
+                <p class="message">{{ message }}</p>
+            {% endfor %}
+        {% endwith %}
+
+        <form method="POST" enctype="multipart/form-data">
+            <input type="file" name="pcap_file" accept=".pcap,.pcapng" required>
+            <button type="submit">Upload & Analyze</button>
+        </form>
+        <p class="notice">Upload only a capture file you are authorized to examine.</p>
+    </div>
+
+    {% if session.get('pcap_result') %}
+    <div class="card">
+        <h2>Analysis Summary</h2>
+        <p>File: {{ session.get('pcap_result', {}).get('filename', '') }}</p>
+
+        <div class="stats">
+            <div class="stat">Total Packets
+                <div class="value">{{ session.get('pcap_result', {}).get('total_packets', 0) }}</div>
+            </div>
+            <div class="stat">Unique IPs
+                <div class="value">{{ session.get('pcap_result', {}).get('unique_ips', 0) }}</div>
+            </div>
+            <div class="stat">Suspicious Indicators
+                <div class="value">{{ session.get('pcap_result', {}).get('suspicious_count', 0) }}</div>
+            </div>
+            <div class="stat">Protocols
+                <div class="value">{{ session.get('pcap_result', {}).get('protocol_counts', {})|length }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Protocol Distribution</h2>
+        {% for protocol, count in session.get('pcap_result', {}).get('protocol_counts', {}).items() %}
+            <p>{{ protocol }}: <strong>{{ count }}</strong> packets</p>
+        {% else %}
+            <p>No protocol data available.</p>
+        {% endfor %}
+    </div>
+
+    <div class="card">
+        <h2>Suspicious Indicators</h2>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                <tr>
+                    <th>Packet</th><th>Time</th><th>Protocol</th>
+                    <th>Source IP</th><th>Destination</th>
+                    <th>Severity</th><th>Indicator</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in session.get('pcap_result', {}).get('threats', []) %}
+                <tr>
+                    <td>{{ item.get('number', '-') }}</td>
+                    <td>{{ item.get('timestamp', '-') }}</td>
+                    <td>{{ item.get('protocol', '-') }}</td>
+                    <td>{{ item.get('source', '-') }}</td>
+                    <td>{{ item.get('destination', '-') }}</td>
+                    <td class="{{ item.get('severity', '')|lower }}">{{ item.get('severity', '-') }}</td>
+                    <td>{{ item.get('threat', '-') }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="7">No suspicious indicators found in this capture.</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Packet Details</h2>
+        <input type="text" id="packetSearch" placeholder="Search IP, protocol or indicator...">
+        <button type="button" id="exportCsv">Export packets to CSV</button>
+
+        <div class="table-wrap">
+            <table id="packetTable">
+                <thead>
+                <tr>
+                    <th>Packet</th><th>Timestamp</th><th>Protocol</th>
+                    <th>Source IP</th><th>Destination IP</th>
+                    <th>Size (bytes)</th><th>Indicator</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in session.get('pcap_result', {}).get('packets', []) %}
+                <tr>
+                    <td>{{ item.get('number', '-') }}</td>
+                    <td>{{ item.get('timestamp', '-') }}</td>
+                    <td>{{ item.get('protocol', '-') }}</td>
+                    <td>{{ item.get('source', '-') }}</td>
+                    <td>{{ item.get('destination', '-') }}</td>
+                    <td>{{ item.get('size', 0) }}</td>
+                    <td>{{ item.get('threat', 'Normal') }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+const searchInput = document.getElementById("packetSearch");
+if (searchInput) {
+    searchInput.addEventListener("input", function () {
+        const query = this.value.toLowerCase();
+        document.querySelectorAll("#packetTable tbody tr").forEach(row => {
+            row.style.display = row.innerText.toLowerCase().includes(query) ? "" : "none";
+        });
+    });
+}
+
+const exportButton = document.getElementById("exportCsv");
+if (exportButton) {
+    exportButton.addEventListener("click", function () {
+        const rows = [...document.querySelectorAll("#packetTable tr")];
+        const csv = rows.map(row =>
+            [...row.querySelectorAll("th, td")].map(cell =>
+                '"' + cell.innerText.replace(/"/g, '""') + '"'
+            ).join(",")
+        ).join("\r\n");
+
+        const blob = new Blob(["\uFEFF" + csv], {type: "text/csv;charset=utf-8;"});
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "pcap-packet-analysis.csv";
+        link.click();
+        URL.revokeObjectURL(url);
+    });
+}
+</script>
+</body>
+</html>

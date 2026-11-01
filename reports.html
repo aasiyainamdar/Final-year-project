@@ -1,0 +1,290 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports | Network Forensics</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/reports.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div class="app-shell">
+
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-icon">N</div>
+            <div>
+                <h2>NET<span>FORENSICS</span></h2>
+                <small>NETWORK SECURITY</small>
+            </div>
+        </div>
+
+        <div class="nav-label">WORKSPACE</div>
+        <nav class="navigation">
+            <a href="/dashboard"><span>▦</span> Dashboard</a>
+            <a href="/live-capture"><span>◉</span> Live Capture</a>
+            <a href="/analysis"><span>⌕</span> Analysis</a>
+            <a href="/alerts"><span>⚠</span> Alerts</a>
+            <a href="/reports" class="active"><span>▤</span> Reports</a>
+        </nav>
+
+        <div class="sidebar-bottom">
+            <div class="system-status"><span class="status-dot"></span> System interface active</div>
+            <a href="/logout" class="logout-link"><span>↪</span> Logout</a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="topbar">
+            <div>
+                <div class="breadcrumb">Workspace <span>/</span> Reports</div>
+                <h1>Security Reports</h1>
+                <p class="subtitle">Review detected network activity and security indicators.</p>
+            </div>
+            <div class="top-actions">
+                <div class="live-badge"><span class="status-dot"></span> REPORT CENTER</div>
+                <button class="btn btn-outline" id="refreshBtn">↻ Refresh</button>
+                <button class="btn btn-primary" id="printBtn">⤓ Print / PDF</button>
+            </div>
+        </header>
+
+        <!-- PCAP Upload Section -->
+        <section class="panel pcap-upload-panel">
+            <div class="panel-heading">
+                <div>
+                    <h3>Upload PCAP File</h3>
+                    <p>Upload a network capture file to analyze packets and suspicious activity.</p>
+                </div>
+                <span class="panel-tag">PCAP ANALYSIS</span>
+            </div>
+
+            <form action="/reports" method="POST" enctype="multipart/form-data"
+                  id="pcapUploadForm">
+                <div class="pcap-upload-row">
+                    <div class="pcap-file-box">
+                        <span class="pcap-file-icon">⇧</span>
+                        <div>
+                            <strong id="pcapFileName">Choose a PCAP file</strong>
+                            <p>Supported formats: .pcap, .pcapng</p>
+                        </div>
+                        <input
+                            type="file"
+                            name="pcap_file"
+                            id="pcapFileInput"
+                            accept=".pcap,.pcapng"
+                            required
+                        >
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="pcapUploadBtn">
+                        ↑ Upload & Analyze
+                    </button>
+                </div>
+                <p class="pcap-help">
+                    Analyze only network captures you are authorized to inspect.
+                </p>
+            </form>
+
+            {% with messages = get_flashed_messages() %}
+                {% for message in messages %}
+                    <p class="pcap-message">{{ message }}</p>
+                {% endfor %}
+            {% endwith %}
+
+            {% if session.get('pcap_result') %}
+                {% set pcap = session.get('pcap_result') %}
+                <div class="pcap-results">
+                    <h3>PCAP Analysis Results</h3>
+                    <p>File: <strong>{{ pcap.get('filename', '') }}</strong></p>
+
+                    <div class="pcap-stats-grid">
+                        <div class="pcap-stat">
+                            <span>Total Packets</span>
+                            <strong>{{ pcap.get('total_packets', 0) }}</strong>
+                        </div>
+                        <div class="pcap-stat">
+                            <span>Unique IPs</span>
+                            <strong>{{ pcap.get('unique_ips', 0) }}</strong>
+                        </div>
+                        <div class="pcap-stat">
+                            <span>Suspicious Indicators</span>
+                            <strong>{{ pcap.get('suspicious_count', 0) }}</strong>
+                        </div>
+                    </div>
+
+                    <h4>Protocol Distribution</h4>
+                    <div class="pcap-protocol-list">
+                        {% for protocol, count in pcap.get('protocol_counts', {}).items() %}
+                            <span>{{ protocol }}: <strong>{{ count }}</strong></span>
+                        {% endfor %}
+                    </div>
+
+                    <h4>Suspicious Activity</h4>
+                    <div class="table-scroll">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Packet</th>
+                                    <th>Protocol</th>
+                                    <th>Source IP</th>
+                                    <th>Destination</th>
+                                    <th>Severity</th>
+                                    <th>Indicator</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in pcap.get('threats', []) %}
+                                    <tr>
+                                        <td>{{ item.get('number', '-') }}</td>
+                                        <td>{{ item.get('protocol', '-') }}</td>
+                                        <td>{{ item.get('source', '-') }}</td>
+                                        <td>{{ item.get('destination', '-') }}</td>
+                                        <td>{{ item.get('severity', '-') }}</td>
+                                        <td>{{ item.get('threat', '-') }}</td>
+                                    </tr>
+                                {% else %}
+                                    <tr>
+                                        <td colspan="6" class="empty-cell">
+                                            No suspicious indicators found in this capture.
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% endif %}
+        </section>
+
+        <section class="report-toolbar">
+            <div>
+                <h2>Report Overview</h2>
+                <p>Summary based on the threat records currently available in the system.</p>
+            </div>
+            <div class="toolbar-actions">
+                <button class="btn btn-outline" id="csvBtn">⇩ Export CSV</button>
+                <span class="updated-text">Updated: <strong id="lastUpdated">Waiting...</strong></span>
+            </div>
+        </section>
+
+        <section class="metrics-grid">
+            <article class="metric-card">
+                <div class="metric-top"><span>Total Threat Records</span><span class="metric-icon blue">▤</span></div>
+                <div class="metric-number" id="totalCount">—</div>
+                <div class="metric-foot">Available threat log entries</div>
+            </article>
+            <article class="metric-card">
+                <div class="metric-top"><span>High Severity</span><span class="metric-icon red">⚠</span></div>
+                <div class="metric-number" id="highCount">—</div>
+                <div class="metric-foot"><span class="severity-dot high-dot"></span> Requires priority review</div>
+            </article>
+            <article class="metric-card">
+                <div class="metric-top"><span>Medium Severity</span><span class="metric-icon orange">◈</span></div>
+                <div class="metric-number" id="mediumCount">—</div>
+                <div class="metric-foot"><span class="severity-dot medium-dot"></span> Review recommended</div>
+            </article>
+            <article class="metric-card">
+                <div class="metric-top"><span>Low / Other</span><span class="metric-icon green">✓</span></div>
+                <div class="metric-number" id="lowCount">—</div>
+                <div class="metric-foot"><span class="severity-dot low-dot"></span> Remaining severity records</div>
+            </article>
+        </section>
+
+        <section class="content-grid">
+            <article class="panel chart-panel">
+                <div class="panel-heading">
+                    <div>
+                        <h3>Severity Distribution</h3>
+                        <p>Breakdown of recorded threat severity</p>
+                    </div>
+                    <span class="panel-tag">OVERVIEW</span>
+                </div>
+                <div class="chart-wrap">
+                    <canvas id="severityChart"></canvas>
+                    <div class="chart-empty" id="chartEmpty" hidden>No threat records available yet.</div>
+                </div>
+                <div class="severity-legend">
+                    <span><i class="legend-dot red-bg"></i> High <b id="highPercent">0%</b></span>
+                    <span><i class="legend-dot orange-bg"></i> Medium <b id="mediumPercent">0%</b></span>
+                    <span><i class="legend-dot green-bg"></i> Low / Other <b id="lowPercent">0%</b></span>
+                </div>
+            </article>
+
+            <article class="panel info-panel">
+                <div class="panel-heading">
+                    <div>
+                        <h3>Report Information</h3>
+                        <p>Current report status</p>
+                    </div>
+                    <span class="report-icon">▧</span>
+                </div>
+                <div class="info-row"><span>Report type</span><strong>Threat Summary</strong></div>
+                <div class="info-row"><span>Data source</span><strong>Threat Log API</strong></div>
+                <div class="info-row"><span>Records loaded</span><strong id="loadedRecords">0</strong></div>
+                <div class="info-row"><span>Connection</span><strong id="apiStatus" class="status-text">Connecting...</strong></div>
+                <div class="info-note">
+                    <strong>Note</strong>
+                    <p>These records are security indicators generated by the detection rules. They are not, by themselves, proof of a successful attack.</p>
+                </div>
+            </article>
+        </section>
+
+        <section class="panel table-panel">
+            <div class="table-heading">
+                <div>
+                    <h3>Threat Report Records</h3>
+                    <p>Search and filter the currently available threat logs.</p>
+                </div>
+                <span class="record-pill" id="recordCount">0 records</span>
+            </div>
+
+            <div class="filters">
+                <div class="search-box">
+                    <span>⌕</span>
+                    <input type="search" id="searchInput" placeholder="Search threat, IP address, protocol...">
+                </div>
+                <select id="severityFilter" aria-label="Filter by severity">
+                    <option value="all">All severities</option>
+                    <option value="high">High</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">Low</option>
+                </select>
+                <button class="btn btn-outline" id="clearFiltersBtn">Clear filters</button>
+            </div>
+
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Timestamp</th>
+                        <th>Threat / Event</th>
+                        <th>Source IP</th>
+                        <th>Destination IP</th>
+                        <th>Severity</th>
+                    </tr>
+                    </thead>
+                    <tbody id="reportTableBody">
+                    <tr><td colspan="6" class="empty-cell">Loading report records...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="table-footer">
+                <span id="tableSummary">Showing 0 records</span>
+                <span>Network Forensics Analysis System</span>
+            </div>
+        </section>
+
+        <div class="page-footer">
+            <span>NETFORENSICS <span class="footer-separator">/</span> REPORT CENTER</span>
+            <span>For analysis and investigation purposes</span>
+        </div>
+    </main>
+</div>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script src="{{ url_for('static', filename='js/reports.js') }}"></script>
+</body>
+</html>

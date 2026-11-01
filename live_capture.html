@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>NFA | Live Capture</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/live_capture.css') }}">
+</head>
+
+<body>
+
+<!-- =========================================================
+     BACKGROUND
+========================================================= -->
+
+<div class="bg-grid"></div>
+<div class="bg-glow glow-one"></div>
+<div class="bg-glow glow-two"></div>
+
+
+<!-- =========================================================
+     TOP BAR
+========================================================= -->
+
+<header class="topbar">
+
+    <div class="brand">
+
+        <div class="brand-icon">
+            N
+        </div>
+
+        <div class="brand-text">
+            <strong>NFA</strong>
+            <span>NETWORK FORENSICS ANALYSIS SYSTEM</span>
+        </div>
+
+    </div>
+
+
+    <div class="system-status">
+
+        <span class="status-dot"></span>
+
+        <span>SYSTEM ONLINE</span>
+
+        <strong id="topClock">--:--:--</strong>
+
+    </div>
+
+
+    <div class="top-actions">
+
+        <a href="{{ url_for('dashboard') }}"
+           class="top-btn">
+            DASHBOARD
+        </a>
+
+        <a href="{{ url_for('logout') }}"
+           class="logout-btn">
+            LOGOUT
+        </a>
+
+    </div>
+
+</header>
+
+
+<!-- =========================================================
+     SIDEBAR
+========================================================= -->
+
+<aside class="sidebar">
+
+    <div class="sidebar-title">
+        NFA://NAVIGATION
+    </div>
+
+
+    <nav class="sidebar-nav">
+
+        <a href="{{ url_for('dashboard') }}">
+            <span>◈</span>
+            DASHBOARD
+        </a>
+
+        <a href="{{ url_for('live_capture') }}"
+           class="active">
+            <span>◉</span>
+            LIVE CAPTURE
+        </a>
+
+        <a href="{{ url_for('analysis') }}">
+            <span>⊙</span>
+            ANALYSIS
+        </a>
+
+        <a href="/alerts">
+            <span>⚠</span>
+            ALERTS
+        </a>
+
+        <a href="{{ url_for('reports') }}">
+            <span>▣</span>
+            REPORTS
+        </a>
+
+        <a href="/settings">
+            <span>⚙</span>
+            SETTINGS
+        </a>
+
+    </nav>
+
+
+    <!-- Sidebar visual -->
+
+    <div class="sidebar-visual">
+
+        <img src="{{ url_for('static',
+                             filename='images/analysis-map.png') }}"
+             alt="Network visualization">
+
+    </div>
+
+</aside>
+
+
+<!-- =========================================================
+     MAIN CONTENT
+========================================================= -->
+
+<main class="main-content">
+
+
+    <!-- PAGE HEADER -->
+
+    <section class="page-header">
+
+        <div>
+
+            <span class="section-kicker">
+                NFA://LIVE_CAPTURE
+            </span>
+
+            <h1>
+                LIVE PACKET CAPTURE
+            </h1>
+
+            <p>
+                Real-time network traffic monitoring and packet inspection
+            </p>
+
+        </div>
+
+
+        <div class="capture-status-box">
+
+            <span class="small-label">
+                CAPTURE STATUS
+            </span>
+
+            <div class="capture-status-line">
+
+                <span id="captureDot"
+                      class="capture-dot"></span>
+
+                <strong id="captureStatus">
+                    STARTING...
+                </strong>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         LIVE METRICS
+    ====================================================== -->
+
+    <section class="metric-grid">
+
+
+        <div class="metric-card">
+
+            <span class="metric-label">
+                TOTAL PACKETS
+            </span>
+
+            <strong id="totalPackets">
+                0
+            </strong>
+
+            <small>
+                CAPTURED
+            </small>
+
+        </div>
+
+
+        <div class="metric-card danger">
+
+            <span class="metric-label">
+                SUSPICIOUS
+            </span>
+
+            <strong id="suspiciousPackets">
+                0
+            </strong>
+
+            <small>
+                DETECTED
+            </small>
+
+        </div>
+
+
+        <div class="metric-card">
+
+            <span class="metric-label">
+                PACKETS / SEC
+            </span>
+
+            <strong id="packetsSec">
+                0
+            </strong>
+
+            <small>
+                LIVE RATE
+            </small>
+
+        </div>
+
+
+        <div class="metric-card">
+
+            <span class="metric-label">
+                TCP
+            </span>
+
+            <strong id="tcpPackets">
+                0
+            </strong>
+
+            <small>
+                PACKETS
+            </small>
+
+        </div>
+
+
+        <div class="metric-card">
+
+            <span class="metric-label">
+                UDP
+            </span>
+
+            <strong id="udpPackets">
+                0
+            </strong>
+
+            <small>
+                PACKETS
+            </small>
+
+        </div>
+
+
+        <div class="metric-card">
+
+            <span class="metric-label">
+                ICMP
+            </span>
+
+            <strong id="icmpPackets">
+                0
+            </strong>
+
+            <small>
+                PACKETS
+            </small>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         CAPTURE CONTROL + NETWORK STATUS
+    ====================================================== -->
+
+    <section class="control-grid">
+
+
+        <!-- CAPTURE CONTROL -->
+
+        <div class="panel control-panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <span class="panel-code">
+                        NFA://ENGINE
+                    </span>
+
+                    <h2>
+                        CAPTURE ENGINE
+                    </h2>
+
+                </div>
+
+                <span class="live-badge">
+                    ● LIVE
+                </span>
+
+            </div>
+
+
+            <div class="engine-body">
+
+                <div class="engine-icon">
+                    ◉
+                </div>
+
+                <div class="engine-info">
+
+                    <span>
+                        SCAPY PACKET ENGINE
+                    </span>
+
+                    <strong id="engineStatus">
+                        INITIALIZING
+                    </strong>
+
+                    <small>
+                        Capturing IPv4 traffic in real time
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <div class="engine-stats">
+
+                <div>
+                    <span>MONITORING</span>
+                    <strong id="monitoringStatus">
+                        ENABLED
+                    </strong>
+                </div>
+
+                <div>
+                    <span>INTERFACE</span>
+                    <strong>
+                        DEFAULT
+                    </strong>
+                </div>
+
+                <div>
+                    <span>PACKET BUFFER</span>
+                    <strong>
+                        20
+                    </strong>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- NETWORK STATUS -->
+
+        <div class="panel network-panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <span class="panel-code">
+                        NFA://PROTOCOL
+                    </span>
+
+                    <h2>
+                        NETWORK PROTOCOLS
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div class="protocol-list">
+
+                <div class="protocol-row">
+
+                    <span class="protocol-name">
+                        TCP
+                    </span>
+
+                    <div class="protocol-track">
+                        <div id="tcpBar"
+                             class="protocol-fill tcp-fill"
+                             style="width:0%">
+                        </div>
+                    </div>
+
+                    <strong id="tcpPercent">
+                        0%
+                    </strong>
+
+                </div>
+
+
+                <div class="protocol-row">
+
+                    <span class="protocol-name">
+                        UDP
+                    </span>
+
+                    <div class="protocol-track">
+                        <div id="udpBar"
+                             class="protocol-fill udp-fill"
+                             style="width:0%">
+                        </div>
+                    </div>
+
+                    <strong id="udpPercent">
+                        0%
+                    </strong>
+
+                </div>
+
+
+                <div class="protocol-row">
+
+                    <span class="protocol-name">
+                        ICMP
+                    </span>
+
+                    <div class="protocol-track">
+                        <div id="icmpBar"
+                             class="protocol-fill icmp-fill"
+                             style="width:0%">
+                        </div>
+                    </div>
+
+                    <strong id="icmpPercent">
+                        0%
+                    </strong>
+
+                </div>
+
+
+                <div class="protocol-row">
+
+                    <span class="protocol-name">
+                        OTHER
+                    </span>
+
+                    <div class="protocol-track">
+                        <div id="otherBar"
+                             class="protocol-fill other-fill"
+                             style="width:0%">
+                        </div>
+                    </div>
+
+                    <strong id="otherPercent">
+                        0%
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         LIVE PACKET STREAM
+    ====================================================== -->
+
+    <section class="panel packet-panel">
+
+        <div class="panel-header">
+
+            <div>
+
+                <span class="panel-code">
+                    NFA://PACKETS
+                </span>
+
+                <h2>
+                    LIVE PACKET STREAM
+                </h2>
+
+                <p>
+                    Real-time captured network packets
+                </p>
+
+            </div>
+
+
+            <div class="packet-live-indicator">
+
+                <span class="live-dot"></span>
+
+                <span>
+                    LIVE
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="packet-counter">
+            LAST 20 PACKETS
+        </div>
+
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            TIME
+                        </th>
+
+                        <th>
+                            PROTOCOL
+                        </th>
+
+                        <th>
+                            SOURCE
+                        </th>
+
+                        <th>
+                            DESTINATION
+                        </th>
+
+                        <th>
+                            SIZE
+                        </th>
+
+                        <th>
+                            STATUS
+                        </th>
+
+                        <th>
+                            THREAT
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="packetTableBody">
+
+                    <tr>
+
+                        <td colspan="7"
+                            class="no-data">
+
+                            WAITING FOR LIVE PACKETS...
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer class="page-footer">
+
+        <span>
+            NFA • NETWORK FORENSICS ANALYSIS SYSTEM
+        </span>
+
+        <span>
+            SCAPY ENGINE • REAL-TIME MONITORING
+        </span>
+
+        <span>
+            SECURE // NFA
+        </span>
+
+    </footer>
+
+</main>
+
+
+<!-- =========================================================
+     LIVE CAPTURE JAVASCRIPT
+========================================================= -->
+
+<script>
+
+function formatNumber(value) {
+
+    return Number(value || 0).toLocaleString();
+
+}
+
+
+function updateClock() {
+
+    const now = new Date();
+
+    document.getElementById("topClock").textContent =
+        now.toLocaleTimeString("en-GB");
+
+}
+
+setInterval(updateClock, 1000);
+
+updateClock();
+
+
+function setText(id, value) {
+
+    const element = document.getElementById(id);
+
+    if (element) {
+
+        element.textContent = value;
+
+    }
+
+}
+
+
+function updateProtocolBars(stats) {
+
+    const total = Number(stats.total_packets || 0);
+
+    const protocols = {
+
+        tcp: Number(stats.tcp || 0),
+
+        udp: Number(stats.udp || 0),
+
+        icmp: Number(stats.icmp || 0),
+
+        other: Number(stats.other || 0)
+
+    };
+
+
+    Object.keys(protocols).forEach(protocol => {
+
+        const percentage =
+            total > 0
+                ? (protocols[protocol] / total) * 100
+                : 0;
+
+
+        const rounded =
+            percentage.toFixed(1);
+
+
+        setText(
+            protocol + "Percent",
+            rounded + "%"
+        );
+
+
+        const bar =
+            document.getElementById(
+                protocol + "Bar"
+            );
+
+
+        if (bar) {
+
+            bar.style.width =
+                Math.min(100, percentage) + "%";
+
+        }
+
+    });
+
+}
+
+
+function createPacketRow(packet) {
+
+    const row =
+        document.createElement("tr");
+
+
+    const protocol =
+        packet.protocol || "OTHER";
+
+
+    const status =
+        packet.status || "Allowed";
+
+
+    const threat =
+        packet.threat || "-";
+
+
+    const protocolClass =
+        "protocol-" +
+        protocol.toLowerCase();
+
+
+    const statusClass =
+        status.toLowerCase() === "monitor"
+            ? "status-monitor"
+            : "status-allowed";
+
+
+    row.innerHTML = `
+
+        <td>
+            ${packet.time || "-"}
+        </td>
+
+        <td>
+            <span class="protocol-badge ${protocolClass}">
+                ${protocol}
+            </span>
+        </td>
+
+        <td>
+            ${packet.source || "-"}
+        </td>
+
+        <td>
+            ${packet.destination || "-"}
+        </td>
+
+        <td>
+            ${formatNumber(packet.size)} B
+        </td>
+
+        <td>
+            <span class="status-badge ${statusClass}">
+                <span class="status-dot-small"></span>
+                ${status}
+            </span>
+        </td>
+
+        <td class="${threat !== "-" ? "threat-text" : ""}">
+            ${threat}
+        </td>
+
+    `;
+
+
+    return row;
+
+}
+
+
+async function loadLiveCapture() {
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/live",
+                {
+                    cache: "no-store"
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "HTTP " + response.status
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        const stats =
+            data.stats || {};
+
+
+        const logs =
+            data.logs || [];
+
+
+        /* ==========================
+           METRICS
+        ========================== */
+
+        setText(
+            "totalPackets",
+            formatNumber(stats.total_packets)
+        );
+
+
+        setText(
+            "suspiciousPackets",
+            formatNumber(stats.suspicious)
+        );
+
+
+        setText(
+            "packetsSec",
+            formatNumber(stats.packets_sec)
+        );
+
+
+        setText(
+            "tcpPackets",
+            formatNumber(stats.tcp)
+        );
+
+
+        setText(
+            "udpPackets",
+            formatNumber(stats.udp)
+        );
+
+
+        setText(
+            "icmpPackets",
+            formatNumber(stats.icmp)
+        );
+
+
+        /* ==========================
+           PROTOCOL BARS
+        ========================== */
+
+        updateProtocolBars(stats);
+
+
+        /* ==========================
+           CAPTURE STATUS
+        ========================== */
+
+        if (Number(stats.total_packets || 0) > 0) {
+
+            setText(
+                "captureStatus",
+                "ACTIVE"
+            );
+
+
+            setText(
+                "engineStatus",
+                "RUNNING"
+            );
+
+
+            const dot =
+                document.getElementById(
+                    "captureDot"
+                );
+
+
+            if (dot) {
+
+                dot.classList.add(
+                    "active"
+                );
+
+            }
+
+        } else {
+
+            setText(
+                "captureStatus",
+                "WAITING"
+            );
+
+
+            setText(
+                "engineStatus",
+                "READY"
+            );
+
+        }
+
+
+        /* ==========================
+           PACKET TABLE
+        ========================== */
+
+        const table =
+            document.getElementById(
+                "packetTableBody"
+            );
+
+
+        table.innerHTML = "";
+
+
+        if (!logs.length) {
+
+            table.innerHTML = `
+
+                <tr>
+
+                    <td colspan="7"
+                        class="no-data">
+
+                        WAITING FOR LIVE PACKETS...
+
+                    </td>
+
+                </tr>
+
+            `;
+
+            return;
+
+        }
+
+
+        logs.forEach(packet => {
+
+            table.appendChild(
+                createPacketRow(packet)
+            );
+
+        });
+
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "LIVE CAPTURE ERROR:",
+            error
+        );
+
+
+        setText(
+            "captureStatus",
+            "OFFLINE"
+        );
+
+
+        setText(
+            "engineStatus",
+            "OFFLINE"
+        );
+
+    }
+
+}
+
+
+/* Start immediately */
+
+loadLiveCapture();
+
+
+/* Refresh every second */
+
+setInterval(
+    loadLiveCapture,
+    1000
+);
+
+</script>
+
+</body>
+</html>

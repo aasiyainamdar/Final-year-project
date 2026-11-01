@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFA | Analysis</title>
+
+    <!-- IMPORTANT: Analysis CSS -->
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/analysis.css') }}">
+
+    <style>
+        /* ===== ANALYSIS PAGE SAFE OVERRIDES ===== */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            min-height: 100%;
+            background: #020b19;
+            color: #d8f6ff;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            overflow-x: hidden;
+        }
+
+        .analysis-page {
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 80% 10%, rgba(0,130,255,.10), transparent 30%),
+                radial-gradient(circle at 20% 80%, rgba(0,220,255,.06), transparent 30%),
+                #020b19;
+        }
+
+        /* ===== TOP BAR ===== */
+
+        .analysis-topbar {
+            height: 72px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 24px;
+
+            background: linear-gradient(90deg,#031329,#020d20);
+            border-bottom: 1px solid #075d9e;
+            box-shadow: 0 0 22px rgba(0,130,255,.18);
+        }
+
+        .analysis-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-box {
+            width: 40px;
+            height: 40px;
+            display: grid;
+            place-items: center;
+
+            color: #00eaff;
+            border: 1px solid #00aeea;
+            background: rgba(0,150,255,.08);
+
+            transform: rotate(45deg);
+            box-shadow: 0 0 15px rgba(0,210,255,.25);
+        }
+
+        .brand-box span {
+            transform: rotate(-45deg);
+            font-weight: 800;
+            font-size: 18px;
+        }
+
+        .brand-name {
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: #e8fbff;
+        }
+
+        .brand-sub {
+            font-size: 9px;
+            color: #4e9dbb;
+            letter-spacing: 1.5px;
+        }
+
+        .top-status {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-size: 11px;
+            letter-spacing: 1px;
+        }
+
+        .online-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #00ffae;
+            box-shadow: 0 0 12px #00ffae;
+        }
+
+        .online-text {
+            color: #00ffae;
+        }
+
+        #analysisClock {
+            color: #00d9ff;
+            font-family: monospace;
+        }
+
+        .top-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .top-actions a {
+            color: #00d9ff;
+            text-decoration: none;
+            font-size: 10px;
+            letter-spacing: 1px;
+            padding: 9px 14px;
+            border: 1px solid #0879b7;
+            background: rgba(0,120,200,.08);
+        }
+
+        .top-actions a:hover {
+            background: rgba(0,200,255,.12);
+            box-shadow: 0 0 15px rgba(0,210,255,.2);
+        }
+
+        .top-actions .logout {
+            color: #ff5574;
+            border-color: #c52b51;
+        }
+
+        /* ===== SIDEBAR ===== */
+
+        .analysis-sidebar {
+            position: fixed;
+            top: 72px;
+            left: 0;
+            bottom: 0;
+            width: 245px;
+            z-index: 900;
+
+            overflow: hidden;
+
+            background:
+                linear-gradient(180deg,
+                    #03152a 0%,
+                    #02101f 55%,
+                    #020b18 100%);
+
+            border-right: 1px solid #075d9e;
+        }
+
+        .sidebar-nav {
+            position: relative;
+            z-index: 5;
+            padding: 22px 15px;
+        }
+
+        .nav-title {
+            color: #2686a9;
+            font-size: 9px;
+            letter-spacing: 2px;
+            padding: 0 12px 12px;
+        }
+
+        .nav-item {
+            display: block;
+            padding: 13px 13px;
+            margin-bottom: 5px;
+
+            color: #6b9daf;
+            text-decoration: none;
+
+            font-size: 11px;
+            letter-spacing: 1px;
+
+            border-left: 2px solid transparent;
+            transition: .2s;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            color: #00eaff;
+            background: rgba(0,180,255,.08);
+            border-left-color: #00eaff;
+            box-shadow: inset 8px 0 25px rgba(0,180,255,.03);
+        }
+
+        /* ===== YOUR MAP / TREES IMAGE ===== */
+
+        .sidebar-visual {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 275px;
+            z-index: 1;
+            pointer-events: none;
+            overflow: hidden;
+
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .sidebar-visual::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                transparent 10%,
+                rgba(2,11,25,.15) 40%,
+                #020b19 92%
+            );
+        }
+
+        .sidebar-visual img {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+
+            transform: translateX(-50%);
+
+            width: 275px;
+            height: 245px;
+
+            object-fit: cover;
+            object-position: left bottom;
+
+            opacity: .78;
+
+            filter:
+                saturate(1.2)
+                brightness(.85)
+                drop-shadow(0 0 14px rgba(0,160,255,.5));
+        }
+
+        /* ===== MAIN ===== */
+
+        .analysis-main {
+            margin-left: 245px;
+            padding: 102px 32px 45px;
+            min-height: 100vh;
+        }
+
+        .analysis-header {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
+
+        .section-code {
+            color: #00d9ff;
+            font-size: 9px;
+            letter-spacing: 2px;
+        }
+
+        .analysis-header h1 {
+            margin: 7px 0;
+            color: #eafcff;
+            font-size: 31px;
+            letter-spacing: 2px;
+        }
+
+        .analysis-header p {
+            margin: 0;
+            color: #62a5bb;
+            font-size: 12px;
+        }
+
+        /* ===== SUMMARY CARDS ===== */
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .summary-card {
+            min-height: 115px;
+            padding: 20px;
+
+            background: linear-gradient(
+                135deg,
+                rgba(5,28,47,.96),
+                rgba(2,15,29,.96)
+            );
+
+            border: 1px solid #075b7c;
+            box-shadow: inset 0 0 25px rgba(0,140,220,.025);
+        }
+
+        .summary-card span {
+            display: block;
+            color: #568da2;
+            font-size: 9px;
+            letter-spacing: 1.5px;
+        }
+
+        .summary-card strong {
+            display: block;
+            margin-top: 14px;
+
+            font-size: 27px;
+            color: #00eaff;
+            font-family: monospace;
+        }
+
+        .summary-card.danger strong {
+            color: #ff526d;
+        }
+
+        .summary-card small {
+            color: #426e7f;
+            font-size: 8px;
+            letter-spacing: 1px;
+        }
+
+        /* ===== PANELS ===== */
+
+        .analysis-panel {
+            margin-top: 14px;
+            padding: 18px;
+
+            background: linear-gradient(
+                135deg,
+                rgba(5,24,40,.98),
+                rgba(2,12,23,.98)
+            );
+
+            border: 1px solid #075b7c;
+
+            box-shadow:
+                0 0 25px rgba(0,100,180,.04),
+                inset 0 0 25px rgba(0,140,220,.025);
+        }
+
+        .panel-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .panel-heading h2 {
+            margin: 5px 0 0;
+            color: #e6faff;
+            font-size: 18px;
+            letter-spacing: 1px;
+        }
+
+        .panel-heading p {
+            margin: 5px 0 0;
+            color: #4d8498;
+            font-size: 10px;
+        }
+
+        .live-badge {
+            color: #00ffae;
+            border: 1px solid #087c65;
+            padding: 6px 11px;
+            font-size: 9px;
+            letter-spacing: 1px;
+        }
+
+        /* ===== LIVE TABLE ===== */
+
+        .table-scroll {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .live-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 850px;
+        }
+
+        .live-table th {
+            padding: 11px 12px;
+            text-align: left;
+
+            color: #4d8ca3;
+            font-size: 8px;
+            letter-spacing: 1.5px;
+
+            background: #031827;
+            border-bottom: 1px solid #0a3449;
+        }
+
+        .live-table td {
+            padding: 11px 12px;
+            color: #9ac2cf;
+            font-family: monospace;
+            font-size: 9px;
+            border-bottom: 1px solid rgba(11,53,72,.45);
+        }
+
+        .live-table tr:hover {
+            background: rgba(0,180,255,.035);
+        }
+
+        .protocol {
+            display: inline-block;
+            min-width: 50px;
+            text-align: center;
+            padding: 5px 8px;
+
+            color: #00dfff;
+            border: 1px solid #087ea5;
+            background: rgba(0,170,255,.07);
+
+            border-radius: 3px;
+        }
+
+        .status {
+            display: inline-block;
+            min-width: 85px;
+            text-align: center;
+            padding: 5px 9px;
+
+            border-radius: 3px;
+            font-size: 8px;
+        }
+
+        .allowed {
+            color: #00ffae;
+            border: 1px solid #087c65;
+            background: rgba(0,255,174,.05);
+        }
+
+        .monitor {
+            color: #ff5570;
+            border: 1px solid #a62946;
+            background: rgba(255,50,90,.06);
+        }
+
+        /* ===== STATISTICS ===== */
+
+        .statistics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .metric {
+            padding: 13px;
+            background: rgba(0,100,160,.045);
+            border: 1px solid #0a3850;
+        }
+
+        .metric span {
+            display: block;
+            color: #4f8396;
+            font-size: 8px;
+            letter-spacing: 1px;
+        }
+
+        .metric strong {
+            display: block;
+            margin-top: 7px;
+            color: #00dcff;
+            font-size: 17px;
+            font-family: monospace;
+        }
+
+        .protocol-stats {
+            display: grid;
+            grid-template-columns: repeat(4,1fr);
+            gap: 8px;
+        }
+
+        .protocol-stat {
+            padding: 16px 8px;
+            text-align: center;
+
+            border: 1px solid #0a3850;
+            background: rgba(0,100,160,.04);
+        }
+
+        .protocol-stat span {
+            display: block;
+            color: #5992a6;
+            font-size: 8px;
+            letter-spacing: 1px;
+        }
+
+        .protocol-stat strong {
+            display: block;
+            margin-top: 8px;
+            color: #00eaff;
+            font-size: 20px;
+            font-family: monospace;
+        }
+
+        .threat-list {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .threat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 12px;
+
+            background: rgba(255,50,80,.025);
+            border-left: 2px solid #ff4e69;
+            border-top: 1px solid #183140;
+            border-right: 1px solid #183140;
+            border-bottom: 1px solid #183140;
+        }
+
+        .threat-row span {
+            color: #8db5c2;
+            font-size: 9px;
+        }
+
+        .threat-row strong {
+            color: #ff5c74;
+            font-family: monospace;
+        }
+
+        .threat-percent {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 170px;
+            flex-direction: column;
+        }
+
+        .threat-percent strong {
+            color: #ff526d;
+            font-size: 43px;
+            font-family: monospace;
+            text-shadow: 0 0 18px rgba(255,50,90,.2);
+        }
+
+        .threat-percent span {
+            color: #537f91;
+            font-size: 9px;
+            letter-spacing: 2px;
+            margin-top: 8px;
+        }
+
+        .no-data {
+            text-align: center;
+            color: #426f80 !important;
+            padding: 25px !important;
+        }
+
+        /* ===== RESPONSIVE ===== */
+
+        @media(max-width: 1000px) {
+            .analysis-sidebar {
+                width: 190px;
+            }
+
+            .analysis-main {
+                margin-left: 190px;
+            }
+
+            .summary-grid {
+                grid-template-columns: repeat(2,1fr);
+            }
+        }
+
+        @media(max-width: 700px) {
+            .analysis-sidebar {
+                display: none;
+            }
+
+            .analysis-main {
+                margin-left: 0;
+                padding: 90px 15px 30px;
+            }
+
+            .top-status {
+                display: none;
+            }
+
+            .summary-grid,
+            .statistics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+    </style>
+</head>
+
+<body>
+
+<div class="analysis-page">
+
+    <!-- ================= TOP BAR ================= -->
+
+    <header class="analysis-topbar">
+
+        <div class="analysis-brand">
+            <div class="brand-box"><span>N</span></div>
+
+            <div>
+                <div class="brand-name">NFA</div>
+                <div class="brand-sub">NETWORK FORENSICS ANALYSIS SYSTEM</div>
+            </div>
+        </div>
+
+        <div class="top-status">
+            <span class="online-dot"></span>
+            <span class="online-text">SYSTEM ONLINE</span>
+            <span id="analysisClock">--:--:--</span>
+        </div>
+
+        <div class="top-actions">
+            <a href="{{ url_for('dashboard') }}">DASHBOARD</a>
+            <a href="{{ url_for('logout') }}" class="logout">LOGOUT</a>
+        </div>
+
+    </header>
+
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="analysis-sidebar">
+
+        <nav class="sidebar-nav">
+
+            <div class="nav-title">NFA://NAVIGATION</div>
+
+            <a href="{{ url_for('dashboard') }}" class="nav-item">
+                ◈ DASHBOARD
+            </a>
+
+            <a href="{{ url_for('live_capture') }}" class="nav-item">
+                ◉ LIVE CAPTURE
+            </a>
+
+            <a href="{{ url_for('analysis') }}" class="nav-item active">
+                ◎ ANALYSIS
+            </a>
+
+            <a href="{{ url_for('alerts') }}" class="nav-item">
+                ⚠ ALERTS
+            </a>
+
+            <a href="{{ url_for('reports') }}" class="nav-item">
+                ▣ REPORTS
+            </a>
+
+            <a href="#" class="nav-item">
+                ⚙ SETTINGS
+            </a>
+
+        </nav>
+
+
+        <!-- YOUR IMAGE -->
+        <div class="sidebar-visual">
+            <img
+                src="{{ url_for('static', filename='images/analysis-map.png') }}"
+                alt="Network map">
+        </div>
+
+    </aside>
+
+
+    <!-- ================= MAIN ================= -->
+
+    <main class="analysis-main">
+
+        <section class="analysis-header">
+
+            <div>
+                <span class="section-code">NFA://ANALYSIS</span>
+
+                <h1>NETWORK ANALYSIS</h1>
+
+                <p>
+                    Real-time packet statistics and forensic analysis
+                </p>
+            </div>
+
+        </section>
+
+
+        <!-- ================= SUMMARY ================= -->
+
+        <section class="summary-grid">
+
+            <div class="summary-card">
+                <span>TOTAL PACKETS</span>
+                <strong id="analysisTotal">0</strong>
+                <small>CAPTURED</small>
+            </div>
+
+            <div class="summary-card danger">
+                <span>SUSPICIOUS PACKETS</span>
+                <strong id="analysisSuspicious">0</strong>
+                <small>DETECTED</small>
+            </div>
+
+            <div class="summary-card">
+                <span>PACKETS / SEC</span>
+                <strong id="analysisRate">0</strong>
+                <small>LIVE RATE</small>
+            </div>
+
+            <div class="summary-card danger">
+                <span>THREAT %</span>
+                <strong id="analysisThreatPercent">0%</strong>
+                <small>NETWORK RISK</small>
+            </div>
+
+        </section>
+
+
+        <!-- ================= LIVE PACKETS ================= -->
+
+        <section class="analysis-panel">
+
+            <div class="panel-heading">
+
+                <div>
+                    <span class="section-code">NFA://LIVE</span>
+                    <h2>LIVE PACKET ANALYSIS</h2>
+                    <p>Real-time captured packets</p>
+                </div>
+
+                <span class="live-badge">● LIVE</span>
+
+            </div>
+
+            <div class="table-scroll">
+
+                <table class="live-table">
+
+                    <thead>
+                        <tr>
+                            <th>TIME</th>
+                            <th>PROTOCOL</th>
+                            <th>SOURCE</th>
+                            <th>DESTINATION</th>
+                            <th>SIZE</th>
+                            <th>STATUS</th>
+                            <th>THREAT</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="analysisTableBody">
+                        <tr>
+                            <td colspan="7" class="no-data">
+                                WAITING FOR PACKETS...
+                            </td>
+                        </tr>
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= STATISTICS ================= -->
+
+        <div class="statistics-grid">
+
+
+            <!-- PACKET SIZE -->
+
+            <section class="analysis-panel">
+
+                <div class="panel-heading">
+                    <div>
+                        <span class="section-code">NFA://PACKETS</span>
+                        <h2>PACKET SIZE STATISTICS</h2>
+                    </div>
+                </div>
+
+                <div class="metric-grid">
+
+                    <div class="metric">
+                        <span>COUNT</span>
+                        <strong id="packetCount">0</strong>
+                    </div>
+
+                    <div class="metric">
+                        <span>MEAN</span>
+                        <strong id="packetMean">0</strong>
+                    </div>
+
+                    <div class="metric">
+                        <span>MEDIAN</span>
+                        <strong id="packetMedian">0</strong>
+                    </div>
+
+                    <div class="metric">
+                        <span>MINIMUM</span>
+                        <strong id="packetMin">0</strong>
+                    </div>
+
+                    <div class="metric">
+                        <span>MAXIMUM</span>
+                        <strong id="packetMax">0</strong>
+                    </div>
+
+                    <div class="metric">
+                        <span>RANGE</span>
+                        <strong id="packetRange">0</strong>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- PROTOCOL -->
+
+            <section class="analysis-panel">
+
+                <div class="panel-heading">
+                    <div>
+                        <span class="section-code">NFA://PROTOCOL</span>
+                        <h2>PROTOCOL STATISTICS</h2>
+                    </div>
+                </div>
+
+                <div class="protocol-stats">
+
+                    <div class="protocol-stat">
+                        <span>TCP</span>
+                        <strong id="statTCP">0</strong>
+                    </div>
+
+                    <div class="protocol-stat">
+                        <span>UDP</span>
+                        <strong id="statUDP">0</strong>
+                    </div>
+
+                    <div class="protocol-stat">
+                        <span>ICMP</span>
+                        <strong id="statICMP">0</strong>
+                    </div>
+
+                    <div class="protocol-stat">
+                        <span>OTHER</span>
+                        <strong id="statOTHER">0</strong>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- THREATS -->
+
+            <section class="analysis-panel">
+
+                <div class="panel-heading">
+                    <div>
+                        <span class="section-code">NFA://THREATS</span>
+                        <h2>THREAT STATISTICS</h2>
+                    </div>
+                </div>
+
+                <div id="threatStatistics"
+                     class="threat-list">
+
+                    <div class="threat-row">
+                        <span>WAITING FOR DATA</span>
+                        <strong>0</strong>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- RESPONSE -->
+
+            <section class="analysis-panel">
+
+                <div class="panel-heading">
+                    <div>
+                        <span class="section-code">NFA://RESPONSE</span>
+                        <h2>RESPONSE TIME STATISTICS</h2>
+                    </div>
+                </div>
+
+                <div class="metric-grid">
+
+                    <div class="metric">
+                        <span>COUNT</span>
+                        <strong id="responseCount">0</strong>
+                    </div>
+
+                    <div class="metric">
+                        <span>MEAN</span>
+                        <strong id="responseMean">0 ms</strong>
+                    </div>
+
+                    <div class="metric">
+                        <span>MEDIAN</span>
+                        <strong id="responseMedian">0 ms</strong>
+                    </div>
+
+                    <div class="metric">
+                        <span>MINIMUM</span>
+                        <strong id="responseMin">0 ms</strong>
+                    </div>
+
+                    <div class="metric">
+                        <span>MAXIMUM</span>
+                        <strong id="responseMax">0 ms</strong>
+                    </div>
+
+                    <div class="metric">
+                        <span>RANGE</span>
+                        <strong id="responseRange">0 ms</strong>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- THREAT PERCENTAGE -->
+
+            <section class="analysis-panel">
+
+                <div class="panel-heading">
+                    <div>
+                        <span class="section-code">NFA://RISK</span>
+                        <h2>THREAT DISTRIBUTION</h2>
+                    </div>
+                </div>
+
+                <div class="threat-percent">
+
+                    <strong id="threatPercentageLarge">
+                        0%
+                    </strong>
+
+                    <span>
+                        SUSPICIOUS TRAFFIC
+                    </span>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<script>
+
+function numberValue(value) {
+    return Number(value || 0).toLocaleString();
+}
+
+
+function setText(id, value) {
+
+    const element = document.getElementById(id);
+
+    if (element) {
+        element.textContent = value;
+    }
+}
+
+
+function updateClock() {
+
+    const now = new Date();
+
+    const time = now.toLocaleTimeString("en-IN", {
+        hour12: false
+    });
+
+    setText("analysisClock", time);
+}
+
+setInterval(updateClock, 1000);
+updateClock();
+
+
+async function loadAnalysis() {
+
+    try {
+
+        const response = await fetch(
+            "/api/live",
+            { cache: "no-store" }
+        );
+
+        if (!response.ok) {
+            throw new Error("HTTP " + response.status);
+        }
+
+        const data = await response.json();
+
+        const stats = data.stats || {};
+        const statistics = data.statistics || {};
+        const logs = data.logs || [];
+
+
+        /* ================= SUMMARY ================= */
+
+        setText(
+            "analysisTotal",
+            numberValue(stats.total_packets)
+        );
+
+        setText(
+            "analysisSuspicious",
+            numberValue(stats.suspicious)
+        );
+
+        setText(
+            "analysisRate",
+            numberValue(stats.packets_sec)
+        );
+
+        const threatPercent =
+            Number(statistics.threat_percentage || 0);
+
+        setText(
+            "analysisThreatPercent",
+            threatPercent.toFixed(2) + "%"
+        );
+
+        setText(
+            "threatPercentageLarge",
+            threatPercent.toFixed(2) + "%"
+        );
+
+
+        /* ================= PACKET STATISTICS ================= */
+
+        const packetStats =
+            statistics.packet_statistics || {};
+
+        setText(
+            "packetCount",
+            numberValue(packetStats.count)
+        );
+
+        setText(
+            "packetMean",
+            Number(packetStats.mean || 0).toFixed(2) + " B"
+        );
+
+        setText(
+            "packetMedian",
+            Number(packetStats.median || 0).toFixed(2) + " B"
+        );
+
+        setText(
+            "packetMin",
+            Number(packetStats.minimum || 0).toFixed(2) + " B"
+        );
+
+        setText(
+            "packetMax",
+            Number(packetStats.maximum || 0).toFixed(2) + " B"
+        );
+
+        setText(
+            "packetRange",
+            Number(packetStats.range || 0).toFixed(2) + " B"
+        );
+
+
+        /* ================= PROTOCOL ================= */
+
+        const protocol =
+            statistics.protocol_statistics || {};
+
+        setText("statTCP", numberValue(
+            protocol.TCP
+        ));
+
+        setText("statUDP", numberValue(
+            protocol.UDP
+        ));
+
+        setText("statICMP", numberValue(
+            protocol.ICMP
+        ));
+
+        setText("statOTHER", numberValue(
+            protocol.OTHER
+        ));
+
+
+        /* ================= RESPONSE ================= */
+
+        const responseStats =
+            statistics.response_statistics || {};
+
+        setText(
+            "responseCount",
+            numberValue(responseStats.count)
+        );
+
+        setText(
+            "responseMean",
+            Number(responseStats.mean || 0).toFixed(2) + " ms"
+        );
+
+        setText(
+            "responseMedian",
+            Number(responseStats.median || 0).toFixed(2) + " ms"
+        );
+
+        setText(
+            "responseMin",
+            Number(responseStats.minimum || 0).toFixed(2) + " ms"
+        );
+
+        setText(
+            "responseMax",
+            Number(responseStats.maximum || 0).toFixed(2) + " ms"
+        );
+
+        setText(
+            "responseRange",
+            Number(responseStats.range || 0).toFixed(2) + " ms"
+        );
+
+
+        /* ================= THREATS ================= */
+
+        const threatContainer =
+            document.getElementById("threatStatistics");
+
+        const threats =
+            statistics.threat_statistics || {};
+
+        threatContainer.innerHTML = "";
+
+        const threatEntries =
+            Object.entries(threats);
+
+        if (!threatEntries.length) {
+
+            threatContainer.innerHTML = `
+                <div class="threat-row">
+                    <span>NO THREATS DETECTED</span>
+                    <strong>0</strong>
+                </div>
+            `;
+
+        } else {
+
+            threatEntries.forEach(([name, value]) => {
+
+                let count = value;
+
+                if (typeof value === "object") {
+
+                    count =
+                        value.count ??
+                        value.total ??
+                        value.value ??
+                        0;
+                }
+
+                threatContainer.innerHTML += `
+                    <div class="threat-row">
+                        <span>${name}</span>
+                        <strong>${numberValue(count)}</strong>
+                    </div>
+                `;
+            });
+        }
+
+
+        /* ================= LIVE TABLE ================= */
+
+        const table =
+            document.getElementById("analysisTableBody");
+
+        table.innerHTML = "";
+
+        if (!logs.length) {
+
+            table.innerHTML = `
+                <tr>
+                    <td colspan="7"
+                        class="no-data">
+                        WAITING FOR PACKETS...
+                    </td>
+                </tr>
+            `;
+
+        } else {
+
+            logs.forEach(packet => {
+
+                const row =
+                    document.createElement("tr");
+
+                const status =
+                    String(packet.status || "").toLowerCase();
+
+                const statusClass =
+                    status === "monitor"
+                        ? "status monitor"
+                        : "status allowed";
+
+                row.innerHTML = `
+                    <td>${packet.time || "-"}</td>
+
+                    <td>
+                        <span class="protocol">
+                            ${packet.protocol || "-"}
+                        </span>
+                    </td>
+
+                    <td>${packet.source || "-"}</td>
+
+                    <td>${packet.destination || "-"}</td>
+
+                    <td>${packet.size || 0} B</td>
+
+                    <td>
+                        <span class="${statusClass}">
+                            ● ${packet.status || "-"}
+                        </span>
+                    </td>
+
+                    <td>${packet.threat || "Normal Traffic"}</td>
+                `;
+
+                table.appendChild(row);
+
+            });
+        }
+
+    } catch (error) {
+
+        console.error(
+            "ANALYSIS API ERROR:",
+            error
+        );
+
+    }
+}
+
+
+loadAnalysis();
+
+/* LIVE UPDATE */
+setInterval(loadAnalysis, 1000);
+
+</script>
+
+</body>
+</html>

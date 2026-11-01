@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>NFA | Network Forensics Analysis System</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/dashboard.css') }}">
+</head>
+
+<body>
+
+<!-- =========================================================
+     TOP NAVIGATION
+========================================================= -->
+
+<header class="topbar">
+
+            
+        <div class="brand-icon">
+            ◈
+        </div>
+
+        <div>
+            <strong>NFA</strong>
+            <span>NETWORK FORENSICS ANALYSIS</span>
+        </div>
+
+    </div>
+
+
+    <nav class="nav-menu">
+
+        <a href="/dashboard" class="active">
+            DASHBOARD
+        </a>
+
+       <a href="{{ url_for('live_capture') }}">
+    LIVE CAPTURE
+        </a>
+
+        <a href="{{ url_for('analysis') }}">
+    ANALYSIS
+        </a>
+
+        <a href="{{ url_for('alerts') }}">
+            ALERTS
+        </a>
+
+        <a href="{{ url_for('reports') }}">
+            REPORTS
+        </a>
+
+    </nav>
+
+
+    <div class="top-actions">
+
+        <div class="system-status">
+            <span class="status-dot"></span>
+            SYSTEM ONLINE
+        </div>
+
+        <div class="clock" id="currentTime">
+            00:00:00
+        </div>
+
+        <a href="/logout" class="logout-btn">
+            LOGOUT
+        </a>
+
+    </div>
+
+</header>
+
+
+<!-- =========================================================
+     MAIN
+========================================================= -->
+
+<main class="dashboard-container">
+
+
+<!-- =========================================================
+     PAGE HEADER
+========================================================= -->
+
+<section class="page-header">
+
+    <div>
+
+        <span class="section-kicker">
+            NFA://COMMAND_CENTER
+        </span>
+
+        <h1>
+            NETWORK FORENSICS
+            <span>ANALYSIS SYSTEM</span>
+        </h1>
+
+        <p>
+            Real-time network monitoring, packet analysis
+            and threat detection.
+        </p>
+
+    </div>
+
+     <a href="{{ url_for('live_capture') }}" class="capture-card-link"></a>
+    <div class="capture-card">
+     
+        <div class="capture-icon">
+            ◉
+        </div>
+
+        <div class="capture-info">
+
+            <small>
+                CAPTURE STATUS
+            </small>
+
+            <strong>
+                ACTIVE
+            </strong>
+
+        </div>
+
+        <span class="capture-pulse"></span>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     STATISTICS
+========================================================= -->
+
+<section class="stats-grid">
+
+
+    <article class="stat-card">
+
+        <div class="card-top">
+
+            <span>
+
+            <b>◈</b>
+
+        </div>
+
+        <strong id="totalPackets">
+            0
+        </strong>
+
+        <div class="card-bottom">
+
+            CAPTURED TRAFFIC
+
+            <span>
+                ● LIVE
+            </span>
+
+        </div>
+
+    </article>
+
+
+    <article class="stat-card">
+
+        <div class="card-top">
+
+            <span>
+                PACKETS / SEC
+            </span>
+
+            <b>⚡</b>
+
+        </div>
+
+        <strong id="packetsSec">
+            0
+        </strong>
+
+        <div class="card-bottom">
+
+            TRAFFIC RATE
+
+            <span>
+                STREAM
+            </span>
+
+        </div>
+
+    </article>
+
+
+    <article class="stat-card suspicious-card">
+
+        <div class="card-top">
+
+            <span>
+                SUSPICIOUS
+            </span>
+
+            <b>⚠</b>
+
+        </div>
+
+        <strong id="suspiciousPackets">
+            0
+        </strong>
+
+        <div class="card-bottom">
+
+            THREATS DETECTED
+
+            <span>
+                ● MONITOR
+            </span>
+
+        </div>
+
+    </article>
+
+
+    <article class="stat-card">
+
+        <div class="card-top">
+
+            <span>
+                TCP TRAFFIC
+            </span>
+
+            <b>TCP</b>
+
+        </div>
+
+        <strong id="tcpPackets">
+            0
+        </strong>
+
+        <small>
+            TCP PACKETS
+        </small>
+
+        <div class="progress">
+            <span id="tcpProgress"></span>
+        </div>
+
+    </article>
+
+
+    <article class="stat-card">
+
+        <div class="card-top">
+
+            <span>
+                UDP TRAFFIC
+            </span>
+
+            <b>UDP</b>
+
+        </div>
+
+        <strong id="udpPackets">
+            0
+        </strong>
+
+        <small>
+            UDP PACKETS
+        </small>
+
+        <div class="progress">
+            <span id="udpProgress"></span>
+        </div>
+
+    </article>
+
+
+    <article class="stat-card icmp-card">
+
+        <div class="card-top">
+
+            <span>
+                ICMP TRAFFIC
+            </span>
+
+            <b>ICMP</b>
+
+        </div>
+
+        <strong id="icmpPackets">
+            0
+        </strong>
+
+        <small>
+            ICMP PACKETS
+        </small>
+
+        <div class="progress">
+            <span id="icmpProgress"></span>
+        </div>
+
+    </article>
+
+</section>
+
+
+<!-- =========================================================
+     MONITORING
+========================================================= -->
+
+<section class="monitor-grid">
+
+
+    <!-- LIVE TRAFFIC -->
+
+    <article class="panel traffic-panel">
+
+        <div class="panel-header">
+
+            <div>
+
+                <span>
+                    NFA://TRAFFIC
+                </span>
+
+                <h3>
+                    LIVE NETWORK ACTIVITY
+                </h3>
+
+            </div>
+
+            <b class="live-badge">
+                ● LIVE
+            </b>
+
+        </div>
+
+
+        <div class="traffic-content">
+
+            <div class="traffic-value">
+
+                <strong id="trafficRate">
+                    0
+                </strong>
+
+                <small>
+                    PACKETS / SEC
+                </small>
+
+            </div>
+
+
+            <div class="waveform">
+
+                <i></i>
+                <i></i>
+                <i></i>
+                <i></i>
+                <i></i>
+                <i></i>
+                <i></i>
+                <i></i>
+                <i></i>
+                <i></i>
+                <i></i>
+                <i></i>
+                <i></i>
+                <i></i>
+                <i></i>
+
+            </div>
+
+        </div>
+
+
+        <div class="protocol-summary">
+
+            <div>
+                <span>TCP</span>
+                <strong id="tcpSummary">0</strong>
+            </div>
+
+            <div>
+                <span>UDP</span>
+                <strong id="udpSummary">0</strong>
+            </div>
+
+            <div>
+                <span>ICMP</span>
+                <strong id="icmpSummary">0</strong>
+            </div>
+
+            <div>
+                <span>OTHER</span>
+                <strong id="otherSummary">0</strong>
+            </div>
+
+        </div>
+
+    </article>
+
+
+    <!-- SYSTEM HEALTH -->
+
+    <article class="panel">
+
+        <div class="panel-header">
+
+            <div>
+
+                <span>
+                    NFA://SYSTEM
+                </span>
+
+                <h3>
+                    SYSTEM HEALTH
+                </h3>
+
+            </div>
+
+            <b class="online-badge">
+                ● ONLINE
+            </b>
+
+        </div>
+
+
+        <div class="health-list">
+
+            <div>
+                <span>
+                    ● &nbsp; PACKET CAPTURE
+                </span>
+
+                <strong>
+                    ACTIVE
+                </strong>
+            </div>
+
+
+            <div>
+                <span>
+                    ● &nbsp; SCAPY ENGINE
+                </span>
+
+                <strong>
+                    RUNNING
+                </strong>
+            </div>
+
+
+            <div>
+                <span>
+                    ● &nbsp; THREAT ENGINE
+                </span>
+
+                <strong>
+                    ACTIVE
+                </strong>
+            </div>
+
+
+            <div>
+                <span>
+                    ● &nbsp; NETWORK MONITOR
+                </span>
+
+                <strong>
+                    ENABLED
+                </strong>
+            </div>
+
+
+            <div>
+                <span>
+                    ● &nbsp; API CONNECTION
+                </span>
+
+                <strong>
+                    CONNECTED
+                </strong>
+            </div>
+
+        </div>
+
+    </article>
+
+</section>
+
+
+<!-- =========================================================
+     NETWORK MAP
+========================================================= -->
+
+<section class="panel map-panel">
+
+    <div class="panel-header">
+
+        <div>
+
+            <span>
+                NFA://NETWORK_MAP
+            </span>
+
+            <h3>
+                GLOBAL NETWORK ACTIVITY
+            </h3>
+
+        </div>
+
+        <b class="live-badge">
+            ● MONITORING
+        </b>
+
+    </div>
+
+
+    <div class="network-map">
+
+        <img
+            src="{{ url_for('static', filename='images/world-map.png') }}"
+            alt="Network World Map"
+        >
+
+        <div class="map-overlay">
+
+            <div class="map-node node-1"></div>
+            <div class="map-node node-2"></div>
+            <div class="map-node node-3"></div>
+            <div class="map-node node-4"></div>
+
+        </div>
+
+        <div class="map-label">
+            LIVE NETWORK NODES
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     THREAT DETECTION CENTER
+========================================================= -->
+
+<section class="threat-center">
+
+
+    <div class="section-header">
+
+        <div>
+
+            <span class="section-kicker">
+                NFA://SECURITY
+            </span>
+
+            <h2>
+                THREAT DETECTION CENTER
+            </h2>
+
+            <p>
+                Real-time suspicious activity and
+                network threat monitoring
+            </p>
+
+        </div>
+
+
+        <div class="threat-live-status">
+
+            <span class="live-dot"></span>
+
+            LIVE MONITORING
+
+        </div>
+
+    </div>
+
+
+    <!-- THREAT SUMMARY -->
+
+    <div class="threat-summary">
+
+
+        <div class="threat-summary-card">
+
+            <span>
+                TOTAL THREATS
+            </span>
+
+            <strong id="threatTotal">
+                0
+            </strong>
+
+            <small>
+                DETECTED EVENTS
+            </small>
+
+        </div>
+
+
+        <div class="threat-summary-card high">
+
+            <span>
+                HIGH SEVERITY
+            </span>
+
+            <strong id="highThreats">
+                0
+            </strong>
+
+            <small>
+                CRITICAL MONITORING
+            </small>
+
+        </div>
+
+
+        <div class="threat-summary-card medium">
+
+            <span>
+                MEDIUM SEVERITY
+            </span>
+
+            <strong id="mediumThreats">
+                0
+            </strong>
+
+            <small>
+                REQUIRES REVIEW
+            </small>
+
+        </div>
+
+
+        <div class="threat-summary-card">
+
+            <span>
+                THREAT ENGINE
+            </span>
+
+            <strong class="engine-active">
+                ACTIVE
+            </strong>
+
+            <small>
+                REAL-TIME ANALYSIS
+            </small>
+
+        </div>
+
+    </div>
+
+
+    <!-- THREAT TABLE -->
+
+    <div class="threat-table-container">
+
+        <div class="threat-table-header">
+
+            <div>
+
+                <span class="section-kicker">
+                    NFA://ALERTS
+                </span>
+
+                <h3>
+                    RECENT THREATS
+                </h3>
+
+            </div>
+
+
+            <span class="threat-count">
+
+                <span id="threatCount">
+                    0
+                </span>
+
+                EVENTS
+
+            </span>
+
+        </div>
+
+
+        <div class="threat-table-wrapper">
+
+            <table class="threat-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>TIME</th>
+                        <th>THREAT</th>
+                        <th>SOURCE IP</th>
+                        <th>DESTINATION</th>
+                        <th>PROTOCOL</th>
+                        <th>SEVERITY</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="threatTableBody">
+
+                    <tr>
+
+                        <td
+                            colspan="6"
+                            class="threat-empty"
+                        >
+
+                            <span class="empty-icon">
+                                ◉
+                            </span>
+
+                            WAITING FOR THREAT EVENTS...
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================================
+     LIVE PACKET STREAM
+========================================================= -->
+
+<section class="panel packet-panel">
+
+    <div class="panel-header">
+
+        <div>
+
+            <span>
+                NFA://PACKET_STREAM
+            </span>
+
+            <h3>
+                LIVE PACKET STREAM
+            </h3>
+
+        </div>
+
+        <small>
+            LAST 20 PACKETS
+        </small>
+
+    </div>
+
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>TIME</th>
+                    <th>PROTOCOL</th>
+                    <th>SOURCE</th>
+                    <th>DESTINATION</th>
+                    <th>SIZE</th>
+                    <th>STATUS</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="packetTableBody">
+
+                <tr>
+
+                    <td colspan="6">
+                        WAITING FOR LIVE PACKETS...
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+
+</main>
+
+
+<!-- =========================================================
+     DASHBOARD JS
+========================================================= -->
+
+<script src="{{ url_for('static', filename='js/dashboard_v2.js') }}"></script>
+
+
+<!-- =========================================================
+     CLOCK
+========================================================= -->
+
+<script>
+
+function updateClock() {
+
+    const now = new Date();
+
+    const time =
+        now.toLocaleTimeString(
+            'en-IN',
+            {
+                hour12: false
+            }
+        );
+
+    const clock =
+        document.getElementById("currentTime");
+
+    if (clock) {
+        clock.textContent = time;
+    }
+
+}
+
+setInterval(updateClock, 1000);
+
+updateClock();
+
+</script>
+
+
+</body>
+</html>

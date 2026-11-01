@@ -1,0 +1,341 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#07111f">
+    <meta name="description" content="Network Forensics Analysis System for network traffic monitoring, PCAP analysis, suspicious activity detection and security reporting.">
+    <title>NETFORENSICS | Network Security Intelligence</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+</head>
+<body>
+<div class="background-grid"></div>
+<div class="glow glow-one"></div>
+<div class="glow glow-two"></div>
+
+<header class="site-header">
+    <a class="brand" href="#home">
+        <span class="brand-mark">N<span>F</span></span>
+        <span class="brand-copy">
+            <strong>NET<span>FORENSICS</span></strong>
+            <small>NETWORK SECURITY INTELLIGENCE</small>
+        </span>
+    </a>
+
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">☰</button>
+
+    <nav class="main-nav" id="mainNav">
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#features">Features</a>
+        <a href="#workflow">How It Works</a>
+        <a href="#instructions">Instructions</a>
+        <a href="{{ url_for('login_page') }}">Login</a>
+        <a href="{{ url_for('create_account') }}">Create Account</a> 
+    </nav>
+
+    <a class="header-cta" href="/dashboard">Open Dashboard <span>↗</span></a>
+</header>
+
+<main>
+    <section class="hero section" id="home">
+        <div class="hero-copy">
+            <div class="eyebrow"><span class="pulse-dot"></span> NETWORK FORENSICS ANALYSIS SYSTEM</div>
+
+            <h1>See the traffic.<br>Understand the <span class="gradient-text">threat.</span></h1>
+
+            <p class="hero-description">
+                A network security analysis platform designed to inspect packet traffic,
+                investigate PCAP captures, identify suspicious indicators and organize
+                findings into meaningful security reports.
+            </p>
+
+            <div class="hero-actions">
+                <a href="/dashboard" class="button button-primary">Explore Dashboard <span>→</span></a>
+                <a href="#workflow" class="button button-secondary">Explore the Workflow <span>↓</span></a>
+            </div>
+
+            <div class="hero-trust">
+                <span><i class="mini-check">✓</i> Live traffic monitoring</span>
+                <span><i class="mini-check">✓</i> PCAP investigation</span>
+                <span><i class="mini-check">✓</i> Security reports</span>
+            </div>
+        </div>
+
+        <div class="hero-visual">
+            <div class="visual-top">
+                <span><i class="pulse-dot"></i> NETWORK OVERVIEW</span>
+                <span class="visual-label">SYSTEM CONCEPT</span>
+            </div>
+
+            <div class="network-scene">
+                <div class="orbit orbit-a"></div>
+                <div class="orbit orbit-b"></div>
+                <div class="orbit orbit-c"></div>
+
+                <svg class="network-lines" viewBox="0 0 500 390" aria-hidden="true">
+                    <g fill="none" stroke="#20bde9" stroke-width="1.2" opacity=".6">
+                        <path d="M250 185 L110 100 L55 175 L145 280 L250 185"/>
+                        <path d="M250 185 L370 85 L445 155 L365 285 L250 185"/>
+                        <path d="M110 100 L370 85 M55 175 L250 185 L445 155"/>
+                        <path d="M145 280 L365 285 M110 100 L145 280 M370 85 L365 285"/>
+                        <path d="M250 185 L250 55 M250 185 L250 340"/>
+                    </g>
+                    <g fill="#43dcff">
+                        <circle cx="250" cy="185" r="7"/>
+                        <circle cx="110" cy="100" r="4"/>
+                        <circle cx="55" cy="175" r="4"/>
+                        <circle cx="145" cy="280" r="4"/>
+                        <circle cx="370" cy="85" r="4"/>
+                        <circle cx="445" cy="155" r="4"/>
+                        <circle cx="365" cy="285" r="4"/>
+                        <circle cx="250" cy="55" r="3"/>
+                        <circle cx="250" cy="340" r="3"/>
+                    </g>
+                    <g fill="#07111f" stroke="#43dcff" stroke-width="1.5">
+                        <circle cx="110" cy="100" r="9"/>
+                        <circle cx="55" cy="175" r="9"/>
+                        <circle cx="145" cy="280" r="9"/>
+                        <circle cx="370" cy="85" r="9"/>
+                        <circle cx="445" cy="155" r="9"/>
+                        <circle cx="365" cy="285" r="9"/>
+                    </g>
+                </svg>
+
+                <div class="core-node">
+                    <div class="core-symbol">⌘</div>
+                    <strong>NETWORK</strong>
+                    <small>ANALYSIS CORE</small>
+                </div>
+
+                <div class="node-label label-a">TRAFFIC</div>
+                <div class="node-label label-b">PACKETS</div>
+                <div class="node-label label-c">DETECTION</div>
+                <div class="node-label label-d">REPORTS</div>
+            </div>
+
+            <div class="visual-bottom">
+                <div><span class="bottom-dot cyan"></span> Traffic inspection</div>
+                <div><span class="bottom-dot purple"></span> Threat analysis</div>
+                <span class="visual-caption">ILLUSTRATIVE VISUAL</span>
+            </div>
+        </div>
+
+        <div class="hero-bottom-line">
+            <span>01 / NETWORK VISIBILITY</span>
+            <span>INSPECT <b>•</b> ANALYZE <b>•</b> INVESTIGATE</span>
+        </div>
+    </section>
+
+    <section class="section intro-section" id="about">
+        <div class="section-heading">
+            <div class="eyebrow">01 — ABOUT THE PROJECT</div>
+            <h2>Understand what happens<br>inside your <span class="gradient-text">network.</span></h2>
+        </div>
+
+        <div class="intro-content">
+            <p>
+                The Network Forensics Analysis System is a web-based project that helps
+                examine network packets and organize security-related observations in one
+                interface. It combines packet inspection, rule-based suspicious activity
+                checks, visual summaries and report generation to support investigation.
+            </p>
+            <p>
+                Users can monitor supported live traffic, upload authorized packet capture
+                files, review packet information and examine recorded threat indicators.
+                Results depend on the available traffic, capture contents and detection rules.
+            </p>
+            <div class="notice-box">
+                <span class="notice-icon">ⓘ</span>
+                <p><strong>Important:</strong> A suspicious indicator is a reason to investigate,
+                not proof that an attack succeeded. This project analyzes and reports activity;
+                it does not automatically block attackers.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section features-section" id="features">
+        <div class="section-heading centered">
+            <div class="eyebrow">02 — PLATFORM CAPABILITIES</div>
+            <h2>Everything you need to <span class="gradient-text">investigate.</span></h2>
+            <p>Navigate the platform through dedicated tools for monitoring, analysis and reporting.</p>
+        </div>
+
+        <div class="feature-grid">
+            <a class="feature-card" href="/live-capture">
+                <div class="feature-icon cyan-icon">◉</div>
+                <span class="feature-number">01 / MONITOR</span>
+                <h3>Live Capture</h3>
+                <p>Inspect supported live packet traffic and observe activity as packets are captured.</p>
+                <span class="feature-link">Open Live Capture <b>↗</b></span>
+            </a>
+
+            <a class="feature-card" href="/analysis">
+                <div class="feature-icon blue-icon">⌕</div>
+                <span class="feature-number">02 / INSPECT</span>
+                <h3>Packet Analysis</h3>
+                <p>Review packet details such as protocol, source IP, destination IP and packet size.</p>
+                <span class="feature-link">Open Analysis <b>↗</b></span>
+            </a>
+
+            <a class="feature-card" href="/reports">
+                <div class="feature-icon purple-icon">⇧</div>
+                <span class="feature-number">03 / INVESTIGATE</span>
+                <h3>PCAP Investigation</h3>
+                <p>Upload an authorized PCAP or PCAPNG capture through the Reports page for analysis.</p>
+                <span class="feature-link">Open Reports & Upload <b>↗</b></span>
+            </a>
+
+            <a class="feature-card" href="/alerts">
+                <div class="feature-icon orange-icon">⚠</div>
+                <span class="feature-number">04 / DETECT</span>
+                <h3>Threat Alerts</h3>
+                <p>Review suspicious indicators produced by the configured detection rules and their severity.</p>
+                <span class="feature-link">View Alerts <b>↗</b></span>
+            </a>
+
+            <a class="feature-card" href="/reports">
+                <div class="feature-icon green-icon">▤</div>
+                <span class="feature-number">05 / SUMMARIZE</span>
+                <h3>Security Reports</h3>
+                <p>Review recorded threat summaries, search records, filter severity and export available reports.</p>
+                <span class="feature-link">View Reports <b>↗</b></span>
+            </a>
+
+            <a class="feature-card" href="/dashboard">
+                <div class="feature-icon pink-icon">▦</div>
+                <span class="feature-number">06 / OVERVIEW</span>
+                <h3>Central Dashboard</h3>
+                <p>Use the main dashboard as the entry point for the system's monitoring and investigation pages.</p>
+                <span class="feature-link">Open Dashboard <b>↗</b></span>
+            </a>
+        </div>
+    </section>
+
+    <section class="workflow-section" id="workflow">
+        <div class="section">
+            <div class="section-heading centered">
+                <div class="eyebrow">03 — INVESTIGATION WORKFLOW</div>
+                <h2>From packet to <span class="gradient-text">insight.</span></h2>
+                <p>A clear workflow for examining traffic and reviewing findings.</p>
+            </div>
+
+            <div class="workflow-grid">
+                <article class="workflow-step">
+                    <div class="step-top"><span>01</span><span class="step-icon">◉</span></div>
+                    <h3>Capture</h3>
+                    <p>Use live capture or select a previously saved network capture file.</p>
+                </article>
+                <div class="step-connector">→</div>
+                <article class="workflow-step">
+                    <div class="step-top"><span>02</span><span class="step-icon">⌕</span></div>
+                    <h3>Analyze</h3>
+                    <p>Inspect packet fields and summarize protocols, IP addresses and packet sizes.</p>
+                </article>
+                <div class="step-connector">→</div>
+                <article class="workflow-step">
+                    <div class="step-top"><span>03</span><span class="step-icon">⚠</span></div>
+                    <h3>Detect</h3>
+                    <p>Apply configured rules to flag traffic patterns that may deserve investigation.</p>
+                </article>
+                <div class="step-connector">→</div>
+                <article class="workflow-step">
+                    <div class="step-top"><span>04</span><span class="step-icon">▤</span></div>
+                    <h3>Report</h3>
+                    <p>Review findings, filter records and export supported report data.</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="section instructions-section" id="instructions">
+        <div class="section-heading">
+            <div class="eyebrow">04 — USER GUIDE</div>
+            <h2>Get started in <span class="gradient-text">four steps.</span></h2>
+            <p class="section-lead">Follow these steps to use the system responsibly and understand its output.</p>
+        </div>
+
+        <div class="guide-layout">
+            <div class="guide-list">
+                <article class="guide-item">
+                    <span class="guide-count">01</span>
+                    <div>
+                        <h3>Sign in to the application</h3>
+                        <p>Open the application and sign in with your registered account to access protected pages.</p>
+                    </div>
+                </article>
+                <article class="guide-item">
+                    <span class="guide-count">02</span>
+                    <div>
+                        <h3>Choose your analysis method</h3>
+                        <p>Open Live Capture to inspect supported live traffic, or open Reports to upload a saved PCAP/PCAPNG file.</p>
+                    </div>
+                </article>
+                <article class="guide-item">
+                    <span class="guide-count">03</span>
+                    <div>
+                        <h3>Review packets and alerts</h3>
+                        <p>Examine protocols, IP addresses, packet sizes and flagged activity. Check the surrounding context before drawing conclusions.</p>
+                    </div>
+                </article>
+                <article class="guide-item">
+                    <span class="guide-count">04</span>
+                    <div>
+                        <h3>Save or export findings</h3>
+                        <p>Use the available report, filter and export options to document your investigation.</p>
+                    </div>
+                </article>
+            </div>
+
+            <aside class="guide-panel">
+                <div class="guide-panel-icon">⌘</div>
+                <div class="eyebrow">RESPONSIBLE USE</div>
+                <h3>Investigate with care.</h3>
+                <ul>
+                    <li>Analyze only traffic you own or have permission to inspect.</li>
+                    <li>Use valid, trusted PCAP/PCAPNG files for upload testing.</li>
+                    <li>Do not share captures containing private or sensitive data.</li>
+                    <li>Treat alerts as indicators that require verification.</li>
+                    <li>Remember that this application reports activity; it does not automatically block traffic.</li>
+                </ul>
+                <a class="button button-primary guide-button" href="/reports">Go to PCAP Upload <span>→</span></a>
+            </aside>
+        </div>
+    </section>
+
+    <section class="final-cta section">
+        <div class="cta-decoration">NF</div>
+        <div class="eyebrow"><span class="pulse-dot"></span> YOUR INVESTIGATION STARTS HERE</div>
+        <h2>Make network activity<br><span class="gradient-text">easier to understand.</span></h2>
+        <p>Open the dashboard to explore the available monitoring, analysis and reporting tools.</p>
+        <a href="/dashboard" class="button button-primary">Enter NETFORENSICS <span>↗</span></a>
+    </section>
+</main>
+
+<footer class="site-footer">
+    <a class="brand footer-brand" href="#home">
+        <span class="brand-mark">N<span>F</span></span>
+        <span class="brand-copy">
+            <strong>NET<span>FORENSICS</span></strong>
+            <small>NETWORK SECURITY INTELLIGENCE</small>
+        </span>
+    </a>
+    <p>Network Forensics Analysis System · Academic project</p>
+    <a href="#home" class="back-top">Back to top ↑</a>
+</footer>
+
+<script>
+    const menuToggle = document.getElementById("menuToggle");
+    const mainNav = document.getElementById("mainNav");
+
+    menuToggle.addEventListener("click", () => {
+        mainNav.classList.toggle("nav-open");
+    });
+
+    mainNav.querySelectorAll("a").forEach(link => {
+        link.addEventListener("click", () => mainNav.classList.remove("nav-open"));
+    });
+</script>
+</body>
+</html>
